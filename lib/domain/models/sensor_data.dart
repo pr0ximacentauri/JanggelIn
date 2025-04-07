@@ -1,18 +1,20 @@
-class SensorModel {
+// entity sementara
+
+class SensorData {
   final int id;
   final double temperature;
   final double humidity;
   final DateTime timestamp;
 
-  SensorModel({
+  SensorData({
     required this.id,
     required this.temperature,
     required this.humidity,
     required this.timestamp,
   });
 
-  factory SensorModel.fromJson(Map<String, dynamic> json) {
-    return SensorModel(
+  factory SensorData.fromJson(Map<String, dynamic> json) {
+    return SensorData(
       id: json['id'],
       temperature: json['temperature'],
       humidity: json['humidity'],
