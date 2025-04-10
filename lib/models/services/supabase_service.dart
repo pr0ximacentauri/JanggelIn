@@ -1,18 +1,20 @@
+import 'package:c3_ppl_agro/const.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../device.dart';
 
 class SupabaseService {
-  static final SupabaseService _instance = SupabaseService._internal();
-  factory SupabaseService() => _instance;
-  
-  SupabaseService._internal();
+  final SupabaseClient _client = SupabaseClient(AppConfig.supabaseUrl, AppConfig.supabaseAnonKey);
 
-  static Future<void> init() async {
-    await Supabase.initialize(
-      url: dotenv.env['SUPABASE_URL'] ?? '',
-      anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
-    );
+  Future<void> updateDeviceStatus(String deviceId, bool status) async {
+    await _client.from('devices').upsert({'id': deviceId, 'status': status});
   }
 
-  static SupabaseClient get client => Supabase.instance.client;
+  Future<Device?> getDeviceStatus(String deviceId) async {
+    final response = await _client.from('devices').select().eq('id', deviceId).single();
+    if (response != null) {
+      return Device.fromJson(response);
+    }
+    return null;
+  }
 }
