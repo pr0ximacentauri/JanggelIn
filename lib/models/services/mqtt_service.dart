@@ -33,23 +33,3 @@
 //     _client.disconnect();
 //   }
 // }
-
-import 'dart:async';
-
-class MqttService {
-  bool _isConnected = false;
-
-  Future<void> connect() async {
-    _isConnected = true;
-    print("MQTT Mock Connected");
-  }
-
-  void sendCommand(String deviceId, bool status) {
-    print("Mock MQTT: Command sent to $deviceId - Status: $status");
-  }
-
-  void disconnect() {
-    _isConnected = false;
-    print("MQTT Mock Disconnected");
-  }
-}

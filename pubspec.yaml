@@ -39,6 +39,7 @@ dependencies:
   supabase_flutter: ^2.8.4
   mqtt_client: ^10.5.1
   provider: ^6.1.4
+  syncfusion_flutter_gauges: ^29.1.37
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'progress_bar.dart';
 
 class SensorCard extends StatelessWidget {
   final String title;
@@ -14,7 +15,6 @@ class SensorCard extends StatelessWidget {
     required this.minValue,
     required this.maxValue,
     required this.color,
-
   });
 
   @override
@@ -26,55 +26,23 @@ class SensorCard extends StatelessWidget {
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildSensorColumn(title, value, progress, color),
-            const VerticalDivider(thickness: 1, color: Colors.grey),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            ArcProgressBar(progress: progress, color: color, strokeWidth: 12),
+            const SizedBox(height: 8),
+            Text(
+              "${value.toStringAsFixed(1)}",
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSensorColumn(String title, double value, double progress, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          "${value.toStringAsFixed(1)}",
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 120,
-          width: 60,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              FractionallySizedBox(
-                heightFactor: progress,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
