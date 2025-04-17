@@ -1,18 +1,18 @@
 class OptimalLimit {
   final int id;
-  double minSuhu;
-  double maksSuhu;
-  double minKelembapan;
-  double maksKelembapan;
+  double minTemperature;
+  double maxTemperature;
+  double minHumidity;
+  double maxHumidity;
   DateTime createdAt;
   DateTime updatedAt;
 
   OptimalLimit({
     required this.id,
-    this.minSuhu = 0.0,
-    this.maksSuhu = 0.0,
-    this.minKelembapan = 0.0,
-    this.maksKelembapan = 0.0,
+    this.minTemperature = 0.0,
+    this.maxTemperature = 0.0,
+    this.minHumidity = 0.0,
+    this.maxHumidity = 0.0,
     createdAt,
     updatedAt,
   }) : this.createdAt = createdAt, this.updatedAt = updatedAt;
@@ -20,10 +20,10 @@ class OptimalLimit {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'minSuhu': minSuhu,
-      'maksSuhu': maksSuhu,
-      'minKelembapan': minKelembapan,
-      'maksKelembapan': maksKelembapan,
+      'minTemperature': minTemperature,
+      'maxTemperature': maxTemperature,
+      'minHumidity': minHumidity,
+      'maxHumidity': maxHumidity,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -32,10 +32,10 @@ class OptimalLimit {
   factory OptimalLimit.fromJson(Map<String, dynamic> json) {
     return OptimalLimit(
       id: json['id'],
-      minSuhu: json['minSuhu'] as double,
-      maksSuhu: json['maksSuhu'] as double,
-      minKelembapan: json['minKelembapan'] as double,
-      maksKelembapan: json['maksKelembapan'] as double,
+      minTemperature: json['minTemperature'] as double,
+      maxTemperature: json['maxTemperature'] as double,
+      minHumidity: json['minHumidity'] as double,
+      maxHumidity: json['maxHumidity'] as double,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );

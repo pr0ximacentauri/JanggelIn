@@ -7,11 +7,11 @@ class SupabaseService {
   final SupabaseClient _client = SupabaseClient(AppConfig.supabaseUrl, AppConfig.supabaseAnonKey);
 
   Future<void> updateDeviceStatus(String deviceId, bool status) async {
-    await _client.from('devices').upsert({'id': deviceId, 'status': status});
+    await _client.from('control').upsert({'id': deviceId, 'status': status});
   }
 
   Future<SensorData?> getDeviceStatus(String deviceId) async {
-    final response = await _client.from('devices').select().eq('id', deviceId).single();
+    final response = await _client.from('control').select().eq('id', deviceId).single();
     if (response != null) {
       return SensorData.fromJson(response);
     }

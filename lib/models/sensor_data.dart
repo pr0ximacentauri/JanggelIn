@@ -1,4 +1,3 @@
-// entity sementara
 class SensorData {
   final int id;
   double temperature;

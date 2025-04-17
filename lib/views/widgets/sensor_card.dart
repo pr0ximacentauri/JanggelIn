@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'progress_bar.dart';
 
 class SensorCard extends StatelessWidget {
   final String title;
-  final double value;
-  final double minValue;
-  final double maxValue;
+  final String type;
   final Color color;
 
   const SensorCard({
     super.key,
     required this.title,
-    required this.value,
-    required this.minValue,
-    required this.maxValue,
+    required this.type,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    double progress = ((value - minValue) / (maxValue - minValue)).clamp(0.0, 1.0);
+    final sensorVM = Provider.of<SensorViewModel>(context);
+        final value = type == 'temperature'
+        ? sensorVM.sensorData.temperature
+        : sensorVM.sensorData.humidity;
 
+    final progress = type == 'temperature'
+        ? sensorVM.getTemperatureProgress()
+        : sensorVM.getHumidityProgress();
+    
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,

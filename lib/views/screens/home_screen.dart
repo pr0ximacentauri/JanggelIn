@@ -1,5 +1,5 @@
+import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../view_models/control_view_model.dart';
 import '../widgets/sensor_card.dart';
 import '../widgets/power_card.dart';
@@ -8,16 +8,80 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    //final deviceVM = Provider.of<DeviceViewModel>(context);
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SensorCard(
+                title: "Suhu",
+                type: "temperature",
+                color: Colors.orange,
+              ),
+              SensorCard(
+                title: "Kelembapan",
+                type: "humidity",
+                color: Colors.blue,
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Center(
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                margin: const EdgeInsets.all(20),
+                child: FloatingActionButton(
+                  onPressed: (){
+                    Navigator(
+                      // MaterialPageRoute(
+                      //   builder: (context) => const ScreenTwo()
+                      //   ),
+                    );
+                  },
+                  tooltip: 'Increment',
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('OFF', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                      ],
+                    ),
+                  ),
+                )
+             ),
+            )
+        ],
+      ),
+    );
+  }
+}
+
+
+class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; 
 
   final List<Widget> _pages = [
     HomeContent(),
-    Center(child: Text("Log History", style: TextStyle(fontSize: 24))),
-    Center(child: Text("Akun", style: TextStyle(fontSize: 24))),
+    // Center(child: Text("Log History", style: TextStyle(fontSize: 24))),
+    AccountContent(),
   ];
 
   void _onItemTapped(int index) {
@@ -30,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Janggelin"),
+        title: Text("Janggelin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white),), 
         centerTitle: true,
         backgroundColor: Colors.lightBlueAccent,
       ),
@@ -43,43 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: "Log"),
+          // BottomNavigationBarItem(icon: Icon(Icons.history), label: "Log"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Akun"),
-        ],
-      ),
-    );
-  }
-}
-
-class HomeContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //final deviceVM = Provider.of<DeviceViewModel>(context);
-
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SensorCard(
-                title: "Suhu",
-                value: 2, //deviceVM.device.temperature,
-                minValue: 25,
-                maxValue: 35,
-                color: Colors.orange,
-              ),
-              SensorCard(
-                title: "Kelembapan",
-                value: 1,//deviceVM.device.humidity,
-                minValue: 60,
-                maxValue: 80,
-                color: Colors.blue,
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
         ],
       ),
     );

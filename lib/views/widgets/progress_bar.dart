@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class ArcProgressBar extends StatelessWidget {
-  final double progress; // 0.0 - 1.0
+  final double progress;
   final Color color;
   final double strokeWidth;
 
@@ -16,7 +16,7 @@ class ArcProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: const Size(150, 150), 
+      size: const Size(120, 120), 
       painter: ArcPainter(progress, color, strokeWidth),
     );
   }

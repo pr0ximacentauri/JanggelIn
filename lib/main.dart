@@ -1,21 +1,27 @@
 import 'package:c3_ppl_agro/const.dart';
-import 'package:c3_ppl_agro/views/screens/account_screen.dart';
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'view_models/control_view_model.dart';
 import 'views/screens/home_screen.dart';
+import 'package:device_preview/device_preview.dart';
 
 void main() async{
-  print("Supabase URL: ${AppConfig.supabaseUrl}");
-  print("MQTT Broker: ${AppConfig.mqttBroker}");
+  // print("Supabase URL: ${AppConfig.supabaseUrl}");
+  // print("MQTT Broker: ${AppConfig.mqttBroker}");
   runApp(
-    MultiProvider(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MultiProvider(
         providers: [
-          //ChangeNotifierProvider(create: (context) => DeviceViewModel()),
+          // ChangeNotifierProvider(create: (_) => ControlViewModel()),
+          ChangeNotifierProvider(create: (_) => SensorViewModel()),
         ],
-    child: MyApp()
+        child: const MyApp(),
+      ),
     ),
-  );  
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,8 +32,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
+        // ignore: deprecated_member_use
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
         home: HomeScreen(),
-        // account: AccountScreen(),
     );
   }
 }

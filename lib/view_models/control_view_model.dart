@@ -3,17 +3,17 @@ import 'package:c3_ppl_agro/models/control.dart';
 import 'package:flutter/material.dart';
 
 class ControlViewModel extends ChangeNotifier {
-  Control _sensor = Control(id: "JGL1");
+  Control _control = Control(id: "JGL1", status: false);
 
-  Control get device => _sensor;
+  Control get control => _control;
 
-  void toggleDevice() {
+  void toggleControl() {
     notifyListeners();
   }
 
   // void updateSensorData() {
-  //   _sensor.temperature = Random().nextDouble() * 10 + 25; 
-  //   _sensor.humidity = Random().nextDouble() * 20 + 60; 
+  //   _control.temperature = Random().nextDouble() * 10 + 25; 
+  //   _control.humidity = Random().nextDouble() * 20 + 60; 
   //   notifyListeners();
   // }
 }
