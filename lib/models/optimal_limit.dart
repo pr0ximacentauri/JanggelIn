@@ -19,7 +19,7 @@ class OptimalLimit {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id_bataa': id,
       'minTemperature': minTemperature,
       'maxTemperature': maxTemperature,
       'minHumidity': minHumidity,
@@ -31,7 +31,7 @@ class OptimalLimit {
 
   factory OptimalLimit.fromJson(Map<String, dynamic> json) {
     return OptimalLimit(
-      id: json['id'],
+      id: json['id_batas'],
       minTemperature: json['minTemperature'] as double,
       maxTemperature: json['maxTemperature'] as double,
       minHumidity: json['minHumidity'] as double,

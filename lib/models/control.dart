@@ -1,23 +1,20 @@
 class Control {
-  final String id;
-  bool status;
+  final int id;
+  final String status;
 
-  Control({
-    required this.id,
-    this.status = false,
-  });
+  Control({required this.id, required this.status});
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id_kontrol': id,
       'status': status,
     };
   }
 
   factory Control.fromJson(Map<String, dynamic> json) {
     return Control(
-      id: json['id'],
-      status: json['status'] as bool,
+      id: json['id_kontrol'],
+      status: json['status'],
     );
   }
 }

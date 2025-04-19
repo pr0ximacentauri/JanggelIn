@@ -1,8 +1,8 @@
 import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../view_models/control_view_model.dart';
 import '../widgets/sensor_card.dart';
-import '../widgets/power_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //final deviceVM = Provider.of<DeviceViewModel>(context);
+    final controlVM = Provider.of<ControlViewModel>(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
@@ -37,42 +37,42 @@ class HomeContent extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Center(
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                margin: const EdgeInsets.all(20),
-                child: FloatingActionButton(
-                  onPressed: (){
-                    Navigator(
-                      // MaterialPageRoute(
-                      //   builder: (context) => const ScreenTwo()
-                      //   ),
-                    );
-                  },
-                  tooltip: 'Increment',
-                  child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('OFF', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
-                      ],
-                    ),
+            child: Container(
+              width: double.infinity,
+              height: 50,
+              margin: const EdgeInsets.all(20),
+              child: InkWell(
+                onTap: () => controlVM.toggleControl(),
+                child: Container(
+                  width: double.infinity,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: controlVM.isOn ? Colors.green : Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                )
-             ),
-            )
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        controlVM.isOn ? 'ON' : 'OFF',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 }
+
 
 
 class HomeScreenState extends State<HomeScreen> {

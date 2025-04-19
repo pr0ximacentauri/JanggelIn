@@ -1,5 +1,6 @@
 import 'package:c3_ppl_agro/const.dart';
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
+import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:c3_ppl_agro/views/screens/auth/login.dart';
@@ -21,7 +22,7 @@ void main() async{
       enabled: !kReleaseMode,
       builder: (context) => MultiProvider(
         providers: [
-          // ChangeNotifierProvider(create: (_) => ControlViewModel()),
+          ChangeNotifierProvider(create: (_) => ControlViewModel()),
           ChangeNotifierProvider(create: (_) => SensorViewModel()),
           ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ],
