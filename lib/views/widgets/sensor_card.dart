@@ -18,33 +18,40 @@ class SensorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-        final value = type == 'temperature'
-        ? sensorVM.sensorData.temperature
-        : sensorVM.sensorData.humidity;
-
-    final progress = type == 'temperature'
-        ? sensorVM.getTemperature()
-        : sensorVM.getHumidity();
     
+    String valueText = '0.0';
+    if (type == 'temperature') {
+      valueText = sensorVM.temperature.toStringAsFixed(1) + ' °C';
+    } else if (type == 'humidity') {
+      valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
+    }
+
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
-      child: Padding(
+      child: Container(
+        width: 150,
+        height: 120,
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              valueText,
+              style: TextStyle(fontSize: 24, color: Colors.black),
             ),
-            const SizedBox(height: 20),
-            ArcProgressBar(progress: progress, color: color, strokeWidth: 12),
-            const SizedBox(height: 1),
+            SizedBox(height: 10),
             Text(
-              "${value.toStringAsFixed(1)}",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black,),
             ),
+            // const SizedBox(height: 20),
+            // ArcProgressBar(progress: progress, color: color, strokeWidth: 12),
+            // const SizedBox(height: 1),
+            // Text(
+            //   "${value.toStringAsFixed(1)}",
+            //   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // ),
           ],
         ),
       ),

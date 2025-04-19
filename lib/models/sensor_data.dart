@@ -10,20 +10,20 @@ class SensorData {
   Map<String, dynamic> toJson() {
     return {
       'id_sensor': id,
-      'temperature': temperature,
-      'humidity': humidity,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'suhu': temperature,
+      'kelembapan': humidity,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
   factory SensorData.fromJson(Map<String, dynamic> json) {
     return SensorData(
       id: json['id_sensor'],
-      temperature: json['temperature'] as double,
-      humidity: json['humidity'] as double,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']), 
+      temperature: (json['suhu'] as num).toDouble(),
+      humidity: (json['kelembapan'] as num).toDouble(),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']), 
     );
   }
 }

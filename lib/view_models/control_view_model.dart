@@ -3,7 +3,7 @@ import 'package:c3_ppl_agro/models/control.dart';
 import 'package:c3_ppl_agro/models/services/control_service.dart';
 import 'package:flutter/foundation.dart';
 
-class ControlViewModel extends ChangeNotifier {
+class ControlViewModel with ChangeNotifier {
   final ControlService _controlService = ControlService();
   Control? _control;
 
