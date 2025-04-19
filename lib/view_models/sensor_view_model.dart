@@ -27,12 +27,12 @@ class SensorViewModel with ChangeNotifier{
     notifyListeners();
   }
 
-  double getTemperatureProgress (){
+  double getTemperature (){
     return((_sensorData.temperature - _optimalLimit.minTemperature) / (_optimalLimit.maxTemperature - _optimalLimit.minTemperature))
           .clamp(0.0, 1.0); 
   }
 
-  double getHumidityProgress (){
+  double getHumidity (){
     return((_sensorData.humidity - _optimalLimit.minHumidity) / (_optimalLimit.maxHumidity - _optimalLimit.minHumidity))
           .clamp(0.0, 1.0); 
   }

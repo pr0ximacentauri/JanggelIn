@@ -23,8 +23,8 @@ class SensorCard extends StatelessWidget {
         : sensorVM.sensorData.humidity;
 
     final progress = type == 'temperature'
-        ? sensorVM.getTemperatureProgress()
-        : sensorVM.getHumidityProgress();
+        ? sensorVM.getTemperature()
+        : sensorVM.getHumidity();
     
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -38,9 +38,9 @@ class SensorCard extends StatelessWidget {
               title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 20),
             ArcProgressBar(progress: progress, color: color, strokeWidth: 12),
-            const SizedBox(height: 8),
+            const SizedBox(height: 1),
             Text(
               "${value.toStringAsFixed(1)}",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),

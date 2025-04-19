@@ -6,7 +6,7 @@ import '../widgets/power_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
+  
   @override
   HomeScreenState createState() => HomeScreenState();
 }
@@ -107,7 +107,6 @@ class HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          // BottomNavigationBarItem(icon: Icon(Icons.history), label: "Log"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Akun"),
         ],
       ),

@@ -1,15 +1,59 @@
-import 'package:c3_ppl_agro/models/user.dart';
+import 'package:c3_ppl_agro/models/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class AuthViewModel with ChangeNotifier {
-  User _user = User(
-    id: 1,
-    username: 'Owner',
-    password: 'admin123',
-    );
+  final AuthService _authService = AuthService();
 
-  User get user => _user;
+  bool _isLoading = false;
+  String? _error;
 
+  bool get isLoading => _isLoading;
+  String? get error => _error;
 
+  Future<bool> login(String email, String password) async {
+    // _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.login(email: email, password: password);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> register(String email, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.register(email: email, password: password);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  Future<void> logout() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _authService.logout();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
 

@@ -14,6 +14,7 @@ class AccountContent extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     //final deviceVM = Provider.of<DeviceViewModel>(context);
+    final authVM = Provider.of<AuthViewModel>(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
@@ -38,10 +39,21 @@ class AccountContent extends StatelessWidget{
                   ),
                   SizedBox(height: 8),
                   Text("Deskripsi", style: TextStyle(fontSize: 16, color: Colors.grey)),
-                  
                 ],
-              )
+              ),
             ],
+          ),
+          SizedBox(height: 16),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            label: const Text("Logout", style: TextStyle(color: Colors.white),),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () async {
+              await authVM.logout();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
           ),
         ],
       ),
