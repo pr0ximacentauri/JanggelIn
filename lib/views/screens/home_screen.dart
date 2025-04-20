@@ -1,7 +1,9 @@
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:c3_ppl_agro/views/screens/control_screen.dart';
 import 'package:c3_ppl_agro/views/screens/history_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/sensor_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    
+    final sensorVM = Provider.of<SensorViewModel>(context);
     return Scaffold(
       backgroundColor: Color(0xFFC8DCC3),
       appBar: PreferredSize(
@@ -74,7 +76,7 @@ class HomeContent extends StatelessWidget {
         ),
       ),
       body: Column(
-        children: const [
+        children: [
           SizedBox(height: 20),
           SensorCard(
             title: 'Suhu saat ini',
@@ -84,6 +86,15 @@ class HomeContent extends StatelessWidget {
           SensorCard(
             title: 'Kelembaban saat ini',
             value: 'humidity',
+          ),
+          const SizedBox(height: 20),
+          Text(
+            sensorVM.updatedAtFormatted,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ],
       ),

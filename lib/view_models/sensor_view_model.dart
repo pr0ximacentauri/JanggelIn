@@ -36,7 +36,7 @@ class SensorViewModel with ChangeNotifier {
     final temp = temperature;
     final humid = humidity;
 
-    // jika suhu terlalu dingin(3), suhu terlalu tinggi(2), kelembapan terlalu rendah(1)
+    // lampu pijar(3), kipas(2), pompa air(1)
     if (temp < limit.minTemperature) {
       await controlVM.setControlStatus(3, 'ON');
     }else if (temp > limit.maxTemperature) {
@@ -46,5 +46,17 @@ class SensorViewModel with ChangeNotifier {
     if (humid < limit.minHumidity) {
       await controlVM.setControlStatus(1, 'ON');
     }
+  }
+
+  String get updatedAtFormatted {
+  final updatedAt = _sensorData?.updatedAt;
+  if (updatedAt == null) return 'Memuat...';
+
+    return 'Terakhir diperbarui: '
+        '${updatedAt.day.toString().padLeft(2, '0')}-'
+        '${updatedAt.month.toString().padLeft(2, '0')}-'
+        '${updatedAt.year} '
+        '${updatedAt.hour.toString().padLeft(2, '0')}:'
+        '${updatedAt.minute.toString().padLeft(2, '0')}';
   }
 }

@@ -39,6 +39,7 @@ class SensorCard extends StatelessWidget {
       sensorVM.evaluateAndControl(optimalVM, controlVM);
     });
 
+    // nanti dihapus kalo udah :)
     print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
     print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
 

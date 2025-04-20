@@ -13,19 +13,26 @@ class HistoryContent extends StatelessWidget{
   Widget build(BuildContext context) {
     // final authVM = Provider.of<AuthViewModel>(context);
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Ini History')
-            ],
-          ),
-          SizedBox(height: 16),
-        ],
+      return Scaffold(
+        backgroundColor: Color(0xFFC8DCC3),
+        appBar: AppBar(
+          title: const Text('Log Data Sensor'),
+          backgroundColor: Color(0xFF5E7154),
+        ),
+        body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Ini Log')
+              ],
+            ),
+            SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

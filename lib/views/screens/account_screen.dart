@@ -16,16 +16,10 @@ class AccountContent extends StatelessWidget{
     final authVM = Provider.of<AuthViewModel>(context);
 
     return Scaffold(
+      backgroundColor: Color(0xFFC8DCC3),
       appBar: AppBar(
         title: const Text('Akun Pengguna'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Navigator.pushNamed(context, '/notifikasi');
-            },
-          ),
-        ],
+        backgroundColor: Color(0xFF5E7154),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

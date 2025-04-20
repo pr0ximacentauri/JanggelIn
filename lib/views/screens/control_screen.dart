@@ -14,19 +14,26 @@ class ControlContent extends StatelessWidget{
   Widget build(BuildContext context) {
     // final authVM = Provider.of<AuthViewModel>(context);
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Ini Control')
-            ],
-          ),
-          SizedBox(height: 16),
-        ],
+      return Scaffold(
+        backgroundColor: Color(0xFFC8DCC3),
+        appBar: AppBar(
+          title: const Text('Kontrol IoT'),
+          backgroundColor: Color(0xFF5E7154),
+        ),
+        body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Ini Control')
+              ],
+            ),
+            SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
