@@ -29,18 +29,18 @@ class SensorCard extends StatelessWidget {
       valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (sensorVM.sensorData != null) {
-        sensorVM.evaluateAndControl(optimalVM, controlVM);
-      }
-    });
-
     bool isOptimal = (value == 'temperature')
       ? optimalVM.isTemperatureOptimal(sensorVM.temperature)
       : optimalVM.isHumidityOptimal(sensorVM.humidity);
 
     String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
-    // Color statusColor = isOptimal ? Colors.green : Colors.red;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sensorVM.evaluateAndControl(optimalVM, controlVM);
+    });
+
+    print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
+    print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

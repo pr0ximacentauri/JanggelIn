@@ -32,10 +32,10 @@ class OptimalLimit {
   factory OptimalLimit.fromJson(Map<String, dynamic> json) {
     return OptimalLimit(
       id: json['id_batas'],
-      minTemperature: json['min_suhu'] as double,
-      maxTemperature: json['maks_suhu'] as double,
-      minHumidity: json['min_kelembapan'] as double,
-      maxHumidity: json['maks_kelembapan'] as double,
+      minTemperature: (json['min_suhu'] as num).toDouble(),
+      maxTemperature: (json['maks_suhu'] as num).toDouble(),
+      minHumidity: (json['min_kelembapan'] as num).toDouble(),
+      maxHumidity: (json['maks_kelembapan'] as num).toDouble(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );

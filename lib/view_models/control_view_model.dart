@@ -6,15 +6,22 @@ import 'package:flutter/foundation.dart';
 class ControlViewModel with ChangeNotifier {
   final ControlService _controlService = ControlService();
   List<Control> _controls = [];
-  
+
   List<Control> get controls => _controls;
 
   ControlViewModel() {
     fetchAllControls();
-  }
+    _controlService.listenToAllControlChanges((updatedControl) {
+      final index = _controls.indexWhere((control) => control.id == updatedControl.id);
+      if (index != -1) {
+        _controls[index] = updatedControl;
+        notifyListeners();
+      }
+    });
+  } 
 
   Future<void> fetchAllControls() async {
-    _controls = await _controlService.fetchAllControls();
+    _controls = await _controlService.getAllControls();
     notifyListeners();
   }
 

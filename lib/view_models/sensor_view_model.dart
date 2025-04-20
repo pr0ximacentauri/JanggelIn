@@ -15,6 +15,10 @@ class SensorViewModel with ChangeNotifier {
 
   SensorViewModel() {
     fetchSensorData();
+    _sensorService.listenToSensorUpdates((newData) {
+      _sensorData = newData;
+      notifyListeners();
+    });
   }
 
   Future<void> fetchSensorData() async {
@@ -32,6 +36,7 @@ class SensorViewModel with ChangeNotifier {
     final temp = temperature;
     final humid = humidity;
 
+    // jika suhu terlalu dingin(3), suhu terlalu tinggi(2), kelembapan terlalu rendah(1)
     if (temp < limit.minTemperature) {
       await controlVM.setControlStatus(3, 'ON');
     }else if (temp > limit.maxTemperature) {

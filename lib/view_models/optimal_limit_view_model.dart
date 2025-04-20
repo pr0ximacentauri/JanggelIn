@@ -8,8 +8,12 @@ class OptimalLimitViewModel with ChangeNotifier {
 
   OptimalLimit? get limit => _limit;
 
-  Future<void> fetchLimit() async {
-    _limit = await _service.fetchLatestLimit();
+  OptimalLimitViewModel() {
+    fetchOptimalLimit();
+  }
+
+  Future<void> fetchOptimalLimit() async {
+    _limit = await _service.getOptimalLimit();
     notifyListeners();
   }
 
@@ -22,4 +26,5 @@ class OptimalLimitViewModel with ChangeNotifier {
     if (_limit == null) return true;
     return humidity >= _limit!.minHumidity && humidity <= _limit!.maxHumidity;
   }
+  
 }

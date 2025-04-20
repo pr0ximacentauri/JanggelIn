@@ -113,11 +113,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Janggelin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white),), 
-      //   centerTitle: true,
-      //   backgroundColor: Colors.lightBlueAccent,
-      // ),
       backgroundColor: Colors.blueGrey,
       body: _pages[_selectedIndex], 
       bottomNavigationBar: BottomNavigationBar(
