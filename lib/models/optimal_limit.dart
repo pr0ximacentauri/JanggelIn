@@ -19,25 +19,25 @@ class OptimalLimit {
 
   Map<String, dynamic> toJson() {
     return {
-      'id_bataa': id,
-      'minTemperature': minTemperature,
-      'maxTemperature': maxTemperature,
-      'minHumidity': minHumidity,
-      'maxHumidity': maxHumidity,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'id_batas': id,
+      'min_suhu': minTemperature,
+      'maks_suhu': maxTemperature,
+      'min_kelembapan': minHumidity,
+      'maks_kelembapan': maxHumidity,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
   factory OptimalLimit.fromJson(Map<String, dynamic> json) {
     return OptimalLimit(
       id: json['id_batas'],
-      minTemperature: json['minTemperature'] as double,
-      maxTemperature: json['maxTemperature'] as double,
-      minHumidity: json['minHumidity'] as double,
-      maxHumidity: json['maxHumidity'] as double,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      minTemperature: json['min_suhu'] as double,
+      maxTemperature: json['maks_suhu'] as double,
+      minHumidity: json['min_kelembapan'] as double,
+      maxHumidity: json['maks_kelembapan'] as double,
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 }

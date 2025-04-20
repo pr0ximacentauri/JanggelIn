@@ -5,39 +5,50 @@ import 'package:flutter/foundation.dart';
 
 class ControlViewModel with ChangeNotifier {
   final ControlService _controlService = ControlService();
-  Control? _control;
-
-  Control? get control => _control;
-  bool get isOn => _control?.status == 'ON';
+  List<Control> _controls = [];
+  
+  List<Control> get controls => _controls;
 
   ControlViewModel() {
-    fetchControl();
+    fetchAllControls();
   }
 
-  Future<void> fetchControl() async {
-    _control = await _controlService.fetchControl();
+  Future<void> fetchAllControls() async {
+    _controls = await _controlService.fetchAllControls();
     notifyListeners();
   }
 
-  Future<void> toggleControl() async {
-    final newStatus = isOn ? 'OFF' : 'ON';
-    final updatedControl = await _controlService.updateControlStatus(newStatus);
+  Control? getControlById(int id) {
+    return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, status: 'OFF'));
+  }
+
+  Future<void> setControlStatus(int id, String newStatus) async {
+    final updatedControl = await _controlService.updateControlStatusById(id, newStatus);
 
     if (updatedControl != null) {
-      _control = updatedControl;
+      final index = _controls.indexWhere((control) => control.id == id);
+      if (index != -1) {
+        _controls[index] = updatedControl;
+      } else {
+        _controls.add(updatedControl);
+      }
       notifyListeners();
 
+      // auto off
       if (newStatus == 'ON') {
         Timer(Duration(seconds: 30), () async {
-          final autoOffControl = await _controlService.updateControlStatus('OFF');
+          final autoOffControl = await _controlService.updateControlStatusById(id,'OFF');
           if (autoOffControl != null) {
-            _control = autoOffControl;
-            notifyListeners();
+            final offIndex = _controls.indexWhere((control) => control.id == id);
+            if (offIndex != -1) {
+              _controls[offIndex] = autoOffControl;
+              notifyListeners();
+            } 
           }
         });
       }
     } else {
-      debugPrint("Gagal update status kontrol.");
+      debugPrint("Gagal update status kontrol pada ID $id");
     }
   }
 }

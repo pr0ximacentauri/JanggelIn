@@ -13,7 +13,6 @@ class AccountScreen extends StatefulWidget{
 class AccountContent extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    //final deviceVM = Provider.of<DeviceViewModel>(context);
     final authVM = Provider.of<AuthViewModel>(context);
 
     return SingleChildScrollView(

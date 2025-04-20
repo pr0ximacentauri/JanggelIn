@@ -4,22 +4,31 @@ import '../control.dart';
 class ControlService {
   final _supabase = Supabase.instance.client;
 
-  Future<Control?> fetchControl() async {
+  Future<List<Control>> fetchAllControls() async {
+    final response = await _supabase
+        .from('kontrol')
+        .select();
+
+    if (response == null) return [];
+    return (response as List).map((json) => Control.fromJson(json)).toList();
+  }
+
+  Future<Control?> fetchControlById(int id) async {
     final response = await _supabase
         .from('kontrol')
         .select()
-        .eq('id_kontrol', 1)
+        .eq('id_kontrol', id)
         .maybeSingle();
 
     if (response == null) return null;
     return Control.fromJson(response);
   }
 
-  Future<Control?> updateControlStatus(String newStatus) async {
+ Future<Control?> updateControlStatusById(int id, String newStatus) async {
     final response = await _supabase
         .from('kontrol')
         .update({'status': newStatus})
-        .eq('id_kontrol', 1)
+        .eq('id_kontrol', id)
         .select()
         .maybeSingle();
 

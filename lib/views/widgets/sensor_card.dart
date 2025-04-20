@@ -1,60 +1,98 @@
+import 'package:c3_ppl_agro/view_models/control_view_model.dart';
+import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'progress_bar.dart';
 
+
 class SensorCard extends StatelessWidget {
   final String title;
-  final String type;
-  final Color color;
+  final String value;
 
   const SensorCard({
     super.key,
     required this.title,
-    required this.type,
-    required this.color,
+    required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-    
+    final optimalVM = Provider.of<OptimalLimitViewModel>(context, listen: false);
+    final controlVM = Provider.of<ControlViewModel>(context, listen: false);
+
     String valueText = '0.0';
-    if (type == 'temperature') {
+    if (value == 'temperature') {
       valueText = sensorVM.temperature.toStringAsFixed(1) + ' °C';
-    } else if (type == 'humidity') {
+    } else if (value == 'humidity') {
       valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
     }
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      child: Container(
-        width: 150,
-        height: 120,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              valueText,
-              style: TextStyle(fontSize: 24, color: Colors.black),
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (sensorVM.sensorData != null) {
+        sensorVM.evaluateAndControl(optimalVM, controlVM);
+      }
+    });
+
+    bool isOptimal = (value == 'temperature')
+      ? optimalVM.isTemperatureOptimal(sensorVM.temperature)
+      : optimalVM.isHumidityOptimal(sensorVM.humidity);
+
+    String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
+    // Color statusColor = isOptimal ? Colors.green : Colors.red;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black,),
-            ),
-            // const SizedBox(height: 20),
-            // ArcProgressBar(progress: progress, color: color, strokeWidth: 12),
-            // const SizedBox(height: 1),
-            // Text(
-            //   "${value.toStringAsFixed(1)}",
-            //   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            // ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 10),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.all(20),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: const Color(0xFFAEBDA2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                valueText,
+                style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isOptimal ? Colors.green : Colors.red,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  statusText,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }
