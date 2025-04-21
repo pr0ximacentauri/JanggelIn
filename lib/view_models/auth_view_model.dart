@@ -19,7 +19,7 @@ class AuthViewModel with ChangeNotifier {
       await _authService.login(email: email, password: password);
       return true;
     } catch (e) {
-      _error = e.toString();
+      _error = e.toString().replaceAll("Exception:", "").trim();
       return false;
     } finally {
       _isLoading = false;
@@ -44,6 +44,24 @@ class AuthViewModel with ChangeNotifier {
     }
   }
   
+  Future<bool> forgotPassword(String email) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.forgotPassword(email);
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceAll("Exception:", "").trim();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();

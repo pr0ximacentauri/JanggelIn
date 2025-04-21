@@ -19,6 +19,11 @@ class AuthService {
     return response;
   }
 
+  Future<void> forgotPassword(String email) async {
+  return _client.auth.resetPasswordForEmail(email);
+}
+
+
   Future<void> logout() async {
     return _client.auth.signOut();
   }
