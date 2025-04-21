@@ -3,10 +3,8 @@ import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:c3_ppl_agro/views/screens/auth/login.dart';
-import 'package:c3_ppl_agro/views/screens/control_screen.dart';
-import 'package:c3_ppl_agro/views/screens/history_screen.dart';
+import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
 import 'views/screens/home_screen.dart'; 
@@ -48,16 +46,11 @@ class MyApp extends StatelessWidget {
         useInheritedMediaQuery: true,
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
         home: Page(),
         initialRoute: '/',
         routes: {
           '/login': (context) => Login(),
-          '/home': (context) => const HomeScreen(),
-          '/account': (context) => const AccountScreen(),
-          '/history': (context) => const HistoryScreen(),
-          '/control': (context) => const ControlScreen(),
+          '/page': (context) => const BottomNavbar(), 
         }
     );
   }

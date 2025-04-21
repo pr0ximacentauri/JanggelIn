@@ -13,22 +13,25 @@ class Login extends StatelessWidget {
     final authVM = Provider.of<AuthViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      backgroundColor: Color(0xFFC8DCC3),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text("Login", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             TextField(controller: emailInput, decoration: const InputDecoration(labelText: "Email")),
             TextField(controller: passwordInput, obscureText: true, decoration: const InputDecoration(labelText: "Password")),
             const SizedBox(height: 20),
             if (authVM.error != null) Text(authVM.error!, style: const TextStyle(color: Colors.red)),
             ElevatedButton(
               onPressed: authVM.isLoading ? null : () async {
-                      final success = await authVM.login(emailInput.text, passwordInput.text);
-                      if (success) {
-                        Navigator.pushReplacementNamed(context, '/home');
-                      }
-                    },
+                final success = await authVM.login(emailInput.text, passwordInput.text);
+                if (success) {
+                  Navigator.pushReplacementNamed(context, '/page');
+                }
+              },
               child: authVM.isLoading ? const CircularProgressIndicator() : const Text("Login"),
             ),
           ],

@@ -1,13 +1,15 @@
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
-import 'package:c3_ppl_agro/views/screens/home_screen.dart';
+import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AccountScreen extends StatefulWidget{
+class AccountScreen extends StatelessWidget{
   const AccountScreen({super.key});
 
-   @override
-   HomeScreenState createState() => HomeScreenState();
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavbar();
+  }
 }
 
 class AccountContent extends StatelessWidget{
@@ -45,11 +47,11 @@ class AccountContent extends StatelessWidget{
                       "Owner",
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      "Deskripsi",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
+                    // const SizedBox(height: 8),
+                    // const Text(
+                    //   "Deskripsi",
+                    //   style: TextStyle(fontSize: 16, color: Colors.grey),
+                    // ),
                   ],
                 ),
               ],
@@ -58,8 +60,8 @@ class AccountContent extends StatelessWidget{
 
             const Divider(thickness: 1, color: Colors.grey),
             ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Notifikasi'),
+              leading: const Icon(Icons.account_circle_sharp),
+              title: const Text('Ubah Informasi Akun'),
               onTap: () {
                 
               },
@@ -67,8 +69,8 @@ class AccountContent extends StatelessWidget{
             const Divider(thickness: 1, color: Colors.grey),
             
             ListTile(
-              leading: const Icon(Icons.brightness_6),
-              title: const Text('Tema'),
+              leading: const Icon(Icons.notifications),
+              title: const Text('Notifikasi'),
               onTap: () {
                 
               },

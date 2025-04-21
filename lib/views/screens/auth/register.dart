@@ -13,7 +13,7 @@ class Register extends StatelessWidget {
     final authVM = Provider.of<AuthViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      backgroundColor: Color(0xFFC8DCC3),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -28,7 +28,7 @@ class Register extends StatelessWidget {
                   : () async {
                       final success = await authVM.register(emailInput.text, passwordInput.text);
                       if (success) {
-                        Navigator.pushReplacementNamed(context, '/home');
+                        Navigator.pushReplacementNamed(context, '/login');
                       }
                     },
               child: authVM.isLoading ? const CircularProgressIndicator() : const Text("Register"),

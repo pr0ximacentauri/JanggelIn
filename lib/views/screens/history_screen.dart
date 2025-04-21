@@ -1,11 +1,13 @@
-import 'package:c3_ppl_agro/views/screens/home_screen.dart';
+import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 
-class HistoryScreen extends StatefulWidget{
+class HistoryScreen extends StatelessWidget{
   const HistoryScreen({super.key});
 
-   @override
-   HomeScreenState createState() => HomeScreenState();
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavbar();
+  }
 }
 
 class HistoryContent extends StatelessWidget{

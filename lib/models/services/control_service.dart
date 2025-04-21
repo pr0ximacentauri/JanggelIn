@@ -12,18 +12,7 @@ class ControlService {
     if (response == null) return [];
     return (response as List).map((json) => Control.fromJson(json)).toList();
   }
-
-  // Future<Control?> getControlById(int id) async {
-  //   final response = await _client
-  //       .from('kontrol')
-  //       .select()
-  //       .eq('id_kontrol', id)
-  //       .maybeSingle();
-
-  //   if (response == null) return null;
-  //   return Control.fromJson(response);
-  // }
-
+  
  Future<Control?> updateControlStatusById(int id, String newStatus) async {
     final response = await _client
         .from('kontrol')
