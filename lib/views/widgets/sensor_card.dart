@@ -21,7 +21,7 @@ class SensorCard extends StatelessWidget {
     final optimalVM = Provider.of<OptimalLimitViewModel>(context, listen: false);
     final controlVM = Provider.of<ControlViewModel>(context, listen: false);
 
-    String valueText = '0.0';
+    String valueText = 'None';
     if (value == 'temperature') {
       valueText = sensorVM.temperature.toStringAsFixed(1) + ' °C';
     } else if (value == 'humidity') {
@@ -67,28 +67,30 @@ class SensorCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                valueText,
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isOptimal ? Colors.green : Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  statusText,
+                Text(
+                  valueText,
                   style: const TextStyle(
-                    color: Colors.white,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              )
+               if(sensorVM.hasSensorData) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isOptimal ? Colors.green : Colors.red,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    statusText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
             ],
           ),
         )

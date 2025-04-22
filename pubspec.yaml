@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.1.4
   syncfusion_flutter_gauges: ^29.1.37
   device_preview: ^1.2.0
+  flutter_local_notifications: ^19.1.0
 
 dev_dependencies:
   flutter_test:

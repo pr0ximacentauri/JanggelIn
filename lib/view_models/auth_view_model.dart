@@ -7,6 +7,7 @@ class AuthViewModel with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
+  String? get currentUserEmail => _authService.currentUser?.email;
   bool get isLoading => _isLoading;
   String? get error => _error;
 

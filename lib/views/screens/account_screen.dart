@@ -43,15 +43,10 @@ class AccountContent extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Owner",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    Text(
+                      authVM.currentUserEmail ?? 'Belum ada akun',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    // const SizedBox(height: 8),
-                    // const Text(
-                    //   "Deskripsi",
-                    //   style: TextStyle(fontSize: 16, color: Colors.grey),
-                    // ),
                   ],
                 ),
               ],
@@ -61,9 +56,9 @@ class AccountContent extends StatelessWidget{
             const Divider(thickness: 1, color: Colors.grey),
             ListTile(
               leading: const Icon(Icons.account_circle_sharp),
-              title: const Text('Ubah Informasi Akun'),
+              title: const Text('Ubah Password'),
               onTap: () {
-                
+                Navigator.pushNamed(context, '/forgot-password');
               },
             ),
             const Divider(thickness: 1, color: Colors.grey),
@@ -81,7 +76,7 @@ class AccountContent extends StatelessWidget{
               leading: const Icon(Icons.contact_support),
               title: const Text('Bantuan'),
               onTap: () {
-                // Navigator.pushNamed(context, '/bantuan');
+                
               },
             ),
             const Divider(thickness: 1, color: Colors.grey),
@@ -90,7 +85,7 @@ class AccountContent extends StatelessWidget{
               leading: const Icon(Icons.info),
               title: const Text('Tentang Aplikasi'),
               onTap: () {
-                // Navigator.pushNamed(context, '/bantuan');
+                
               },
             ),
             const Divider(thickness: 1, color: Colors.grey),
@@ -102,8 +97,29 @@ class AccountContent extends StatelessWidget{
                 style: TextStyle(color: Colors.red),
               ),
               onTap: () async {
-                await authVM.logout();
-                Navigator.pushReplacementNamed(context, '/login');
+                final confirmLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Color(0xFF5E7154),
+                    title: const Text("Konfirmasi"),
+                    content: const Text("Apakah kamu yakin ingin logout?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text("Batal", style: TextStyle(color: Colors.black),),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text("Logout", style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogout == true){
+                  await authVM.logout();  
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
               },
             ),
           ],

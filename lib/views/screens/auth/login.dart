@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatelessWidget {
-  final emailInput = TextEditingController();
-  final passwordInput = TextEditingController();
+  final emailTxt = TextEditingController();
+  final passwordTxt = TextEditingController();
 
   Login({super.key});
 
@@ -47,7 +47,7 @@ class Login extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 TextField(
-                  controller: emailInput,
+                  controller: emailTxt,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email",
@@ -55,7 +55,7 @@ class Login extends StatelessWidget {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.green, width: 2), // warna saat fokus
+                      borderSide: BorderSide(color: Colors.green, width: 2),
                     ),
                     prefixIcon: const Icon(Icons.email),
                   ),
@@ -63,7 +63,7 @@ class Login extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 TextField(
-                  controller: passwordInput,
+                  controller: passwordTxt,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -71,16 +71,11 @@ class Login extends StatelessWidget {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.green, width: 2), // warna saat fokus
+                      borderSide: BorderSide(color: Colors.green, width: 2),
                     ),
                     prefixIcon: const Icon(Icons.lock),
                   ),
                 ),
-
-                // if (authVM.error != null) ...[
-                //   const SizedBox(height: 12),
-                //   Text(authVM.error!, style: const TextStyle(color: Colors.red)),
-                // ],
 
                 const SizedBox(height: 24),
 
@@ -95,12 +90,9 @@ class Login extends StatelessWidget {
                   onPressed: authVM.isLoading
                       ? null
                       : () async {
-                          final success = await authVM.login(emailInput.text, passwordInput.text);
-                          if (success) {
-                            Navigator.pushReplacementNamed(context, '/page');
-                          }
-                          final email = await emailInput.text.trim();
-                          final password = await passwordInput.text.trim();
+                          final success = await authVM.login(emailTxt.text, passwordTxt.text);
+                          final email = await emailTxt.text.trim();
+                          final password = await passwordTxt.text.trim();
                           if (email.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Email tidak boleh kosong!")),
@@ -113,7 +105,14 @@ class Login extends StatelessWidget {
                             );
                             return;
                           }
-                          
+                          else if (success) {
+                            Navigator.pushReplacementNamed(context, '/page');
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Email atau password salah!")),
+                            );
+                            return;
+                          }
                         },
                   child: authVM.isLoading
                       ? const SizedBox(

@@ -9,7 +9,7 @@ class SensorViewModel with ChangeNotifier {
   SensorData? _sensorData;
 
   SensorData? get sensorData => _sensorData;
-
+  bool get hasSensorData => _sensorData != null;
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
 
@@ -50,7 +50,7 @@ class SensorViewModel with ChangeNotifier {
 
   String get updatedAtFormatted {
   final updatedAt = _sensorData?.updatedAt;
-  if (updatedAt == null) return 'Memuat...';
+  if (updatedAt == null) return 'Belum ada data sensor!';
 
     return 'Terakhir diperbarui: '
         '${updatedAt.day.toString().padLeft(2, '0')}-'

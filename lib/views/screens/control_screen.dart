@@ -1,3 +1,4 @@
+import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,29 +14,10 @@ class ControlScreen extends StatelessWidget{
 }
 
 class ControlContent extends StatelessWidget {
-
-  Widget _buildAktuatorStatus(String name, bool isOn) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          name,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-        ElevatedButton.icon(
-          onPressed: null,
-          icon: Icon(isOn ? Icons.power : Icons.power_off),
-          label: Text(isOn ? 'ON' : 'OFF'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isOn ? Colors.green : Colors.grey,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: isOn ? Colors.green : Colors.grey,
-            disabledForegroundColor: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
+  final MinSuhuTxt = TextEditingController();
+  final MaxSuhuTxt = TextEditingController();
+  final MinKelembapanTxt = TextEditingController();
+  final MaxKelembapanTxt = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +37,77 @@ class ControlContent extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _buildAktuatorStatus("Pompa Air", pompa?.status == 'ON'),
+                AktuatorStatus(name: "Pompa Air", isOn:  pompa?.status == 'ON'),
                 const SizedBox(height: 16),
-                _buildAktuatorStatus("Kipas Exhaust", kipas?.status == 'ON'),
+                AktuatorStatus(name: "Kipas Exhaust", isOn: kipas?.status == 'ON'),
                 const SizedBox(height: 16),
-                _buildAktuatorStatus("Lampu Pijar", lampu?.status == 'ON'),
+                AktuatorStatus(name: "Lampu Pijar", isOn: lampu?.status == 'ON'),
+                
+                const SizedBox(height: 24),
+                const Divider(thickness: 1, color: Colors.grey),
+
+                Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF385A3C))),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: MinSuhuTxt,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Minimal Batas Suhu",
+                    labelStyle: TextStyle(color: const Color(0xFF385A3C)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                    ),
+                    prefixIcon: const Icon(Icons.thermostat),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: MaxSuhuTxt,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Maksimal Batas Suhu",
+                    labelStyle: TextStyle(color: const Color(0xFF385A3C)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                    ),
+                    prefixIcon: const Icon(Icons.thermostat),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: MinKelembapanTxt,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Minimal Batas Kelembapan",
+                    labelStyle: TextStyle(color: const Color(0xFF385A3C)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                    ),
+                    prefixIcon: const Icon(Icons.water_drop),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: MaxKelembapanTxt,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Maksimal Batas Kelembapan",
+                    labelStyle: TextStyle(color: const Color(0xFF385A3C)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                    ),
+                    prefixIcon: const Icon(Icons.water_drop),
+                  ),
+                ),
+
               ],
             ),
           ),

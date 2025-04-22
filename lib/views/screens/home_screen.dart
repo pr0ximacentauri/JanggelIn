@@ -78,24 +78,36 @@ class HomeContent extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 20),
-          SensorCard(
-            title: 'Suhu saat ini',
-            value: 'temperature',
-          ),
-          SizedBox(height: 20),
-          SensorCard(
-            title: 'Kelembaban saat ini',
-            value: 'humidity',
-          ),
-          const SizedBox(height: 20),
-          Text(
-            sensorVM.updatedAtFormatted,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontStyle: FontStyle.italic,
+          if(sensorVM.hasSensorData) ...[
+            SensorCard(
+              title: 'Suhu saat ini',
+              value: 'temperature',
             ),
-          ),
+            SizedBox(height: 20),
+            SensorCard(
+              title: 'Kelembapan saat ini',
+              value: 'humidity',
+            ),
+          ]else ...[
+            SensorCard(
+              title: 'Suhu saat ini',
+              value: 'None',
+            ),
+            SizedBox(height: 20),
+            SensorCard(
+              title: 'Kelembapan saat ini',
+              value: 'None',
+            ),
+          ],
+            const SizedBox(height: 20),
+            Text(
+              sensorVM.updatedAtFormatted,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
         ],
       ),
       
