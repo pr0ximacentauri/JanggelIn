@@ -37,13 +37,13 @@ class ControlContent extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                AktuatorStatus(name: "Pompa Air", isOn:  pompa?.status == 'ON'),
+                AktuatorStatus(control: pompa),
                 const SizedBox(height: 16),
-                AktuatorStatus(name: "Kipas Exhaust", isOn: kipas?.status == 'ON'),
+                AktuatorStatus(control: kipas),
                 const SizedBox(height: 16),
-                AktuatorStatus(name: "Lampu Pijar", isOn: lampu?.status == 'ON'),
+                AktuatorStatus(control: lampu),
+                const SizedBox(height: 16),
                 
-                const SizedBox(height: 24),
                 const Divider(thickness: 1, color: Colors.grey),
 
                 Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF385A3C))),
@@ -106,6 +106,25 @@ class ControlContent extends StatelessWidget {
                     ),
                     prefixIcon: const Icon(Icons.water_drop),
                   ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF385A3C),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  onPressed: () {
+                    // final minSuhu = MinSuhuTxt.text.trim();
+                    // final maxSuhu = MaxSuhuTxt.text.trim();
+                    // final minKelembapan = MinKelembapanTxt.text.trim();
+                    // final maxKelembapan = MaxKelembapanTxt.text.trim();
+
+                    // controlVM.updateControlLimits(minSuhu, maxSuhu, minKelembapan, maxKelembapan);
+                  },
+                  child: const Text("Simpan", style: TextStyle(color: Colors.white) ),
                 ),
 
               ],

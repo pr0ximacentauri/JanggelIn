@@ -1,20 +1,25 @@
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatelessWidget{
   const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavbar();
+    return Scaffold(
+      body: HistoryContent(), 
+      bottomNavigationBar: BottomNavbar(),
+    );
   }
 }
 
 class HistoryContent extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    // final authVM = Provider.of<AuthViewModel>(context);
-
+    // final sensorVM = Provider.of<SensorViewModel>(context);
+    
       return Scaffold(
         backgroundColor: Color(0xFFC8DCC3),
         appBar: AppBar(
@@ -29,7 +34,8 @@ class HistoryContent extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Ini Log')
+                Text('Ini Log'),
+                // SensorHistoryChart(data: sensorVM.historicalData),
               ],
             ),
             SizedBox(height: 16),

@@ -25,8 +25,8 @@ class ControlViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Control? getControlById(int id) {
-    return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, status: 'OFF'));
+  Control getControlById(int id) {
+    return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, name: 'Unknown', status: 'OFF'));
   }
 
   Future<void> setControlStatus(int id, String newStatus) async {

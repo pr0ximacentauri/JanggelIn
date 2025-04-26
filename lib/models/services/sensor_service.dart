@@ -16,6 +16,18 @@ class SensorService {
     return SensorData.fromJson(response);
   }
 
+  Future<List<SensorData>> fetchAllSensorData() async {
+    final response = await _client
+        .from('sensor_data')
+        .select()
+        .order('created_at', ascending: true);
+
+    return (response as List)
+        .map((json) => SensorData.fromJson(json))
+        .toList();
+}
+
+
   void listenToSensorUpdates(Function(SensorData data) onData) {
     _client.channel('public:sensor_data')
       .onPostgresChanges(

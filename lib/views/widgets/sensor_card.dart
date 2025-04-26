@@ -90,7 +90,22 @@ class SensorCard extends StatelessWidget {
                     ),
                   ),
                 )
-              ],
+              ]else ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "None",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
         )

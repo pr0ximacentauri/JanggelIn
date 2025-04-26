@@ -13,6 +13,8 @@ class SensorViewModel with ChangeNotifier {
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
 
+
+
   SensorViewModel() {
     fetchSensorData();
     _sensorService.listenToSensorUpdates((newData) {
@@ -59,4 +61,5 @@ class SensorViewModel with ChangeNotifier {
         '${updatedAt.hour.toString().padLeft(2, '0')}:'
         '${updatedAt.minute.toString().padLeft(2, '0')}';
   }
+
 }
