@@ -35,7 +35,7 @@ class SensorCard extends StatelessWidget {
     String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      sensorVM.evaluateAndControl(optimalVM, controlVM);
+      sensorVM.actuatorControl(optimalVM, controlVM);
     });
 
     // nanti dihapus kalo udah :)

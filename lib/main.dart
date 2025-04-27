@@ -29,14 +29,14 @@ void main() async{
           ChangeNotifierProvider(create: (_) => OptimalLimitViewModel()),
           ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ],
-        child: const MyApp(),
+        child: const JanggelinApp(),
       ),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class JanggelinApp extends StatelessWidget {
+  const JanggelinApp({super.key});
 
   // This widget is the root of your application.
   @override

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPassword extends StatelessWidget {
-  final emailController = TextEditingController();
+  final emailTxt = TextEditingController();
 
   ForgotPassword({super.key});
 
@@ -47,7 +47,7 @@ class ForgotPassword extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 TextField(
-                  controller: emailController,
+                  controller: emailTxt,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email",
@@ -79,7 +79,7 @@ class ForgotPassword extends StatelessWidget {
                   onPressed: authVM.isLoading
                       ? null
                       : () async {
-                          final email = emailController.text.trim();
+                          final email = emailTxt.text.trim();
                           if (email.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Email tidak boleh kosong.")),

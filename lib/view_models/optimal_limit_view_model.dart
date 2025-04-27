@@ -3,17 +3,17 @@ import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
 import 'package:flutter/material.dart';
 
 class OptimalLimitViewModel with ChangeNotifier {
-  final OptimalLimitService _service = OptimalLimitService();
+  final OptimalLimitService _optimalLimitervice = OptimalLimitService();
   OptimalLimit? _limit;
 
   OptimalLimit? get limit => _limit;
 
   OptimalLimitViewModel() {
-    fetchOptimalLimit();
+    getOptimalLimit();
   }
 
-  Future<void> fetchOptimalLimit() async {
-    _limit = await _service.getOptimalLimit();
+  Future<void> getOptimalLimit() async {
+    _limit = await _optimalLimitervice.fetchOptimalLimit();
     notifyListeners();
   }
 

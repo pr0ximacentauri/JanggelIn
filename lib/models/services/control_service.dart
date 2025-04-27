@@ -4,7 +4,7 @@ import '../control.dart';
 class ControlService {
   final SupabaseClient _client = Supabase.instance.client;
 
-  Future<List<Control>> getAllControls() async {
+  Future<List<Control>> fetchAllControls() async {
     final response = await _client
         .from('kontrol')
         .select();

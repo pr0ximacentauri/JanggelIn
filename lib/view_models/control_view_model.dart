@@ -10,7 +10,7 @@ class ControlViewModel with ChangeNotifier {
   List<Control> get controls => _controls;
 
   ControlViewModel() {
-    fetchAllControls();
+    getAllControls();
     _controlService.listenToAllControlChanges((updatedControl) {
       final index = _controls.indexWhere((control) => control.id == updatedControl.id);
       if (index != -1) {
@@ -20,8 +20,8 @@ class ControlViewModel with ChangeNotifier {
     });
   } 
 
-  Future<void> fetchAllControls() async {
-    _controls = await _controlService.getAllControls();
+  Future<void> getAllControls() async {
+    _controls = await _controlService.fetchAllControls();
     notifyListeners();
   }
 

@@ -4,7 +4,7 @@ import '../optimal_limit.dart';
 class OptimalLimitService {
   final SupabaseClient _client = Supabase.instance.client;
 
-  Future<OptimalLimit?> getOptimalLimit() async {
+  Future<OptimalLimit?> fetchOptimalLimit() async {
     final response = await _client
         .from('batas_optimal')
         .select()

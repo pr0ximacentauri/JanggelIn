@@ -14,21 +14,20 @@ class SensorViewModel with ChangeNotifier {
   double get humidity => _sensorData?.humidity ?? 0.0;
 
 
-
   SensorViewModel() {
-    fetchSensorData();
+    getSensorData();
     _sensorService.listenToSensorUpdates((newData) {
       _sensorData = newData;
       notifyListeners();
     });
   }
 
-  Future<void> fetchSensorData() async {
+  Future<void> getSensorData() async {
     _sensorData = await _sensorService.fetchLatestSensorData();
     notifyListeners();
   }
 
-  Future<void> evaluateAndControl(
+  Future<void> actuatorControl(
     OptimalLimitViewModel optimalVM,
     ControlViewModel controlVM,
   ) async {
