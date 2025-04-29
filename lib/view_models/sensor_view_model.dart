@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:c3_ppl_agro/models/sensor_data.dart';
 import 'package:c3_ppl_agro/models/services/sensor_service.dart';
+import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
+  final MqttService _mqttService = MqttService();
   SensorData? _sensorData;
 
   SensorData? get sensorData => _sensorData;
@@ -20,6 +22,7 @@ class SensorViewModel with ChangeNotifier {
       _sensorData = newData;
       notifyListeners();
     });
+    // listenToMqttSensorData();
   }
 
   Future<void> getSensorData() async {
@@ -48,6 +51,36 @@ class SensorViewModel with ChangeNotifier {
       await controlVM.setControlStatus(1, 'ON');
     }
   }
+
+  // void listenToMqttSensorData() async {
+  //   await _mqttService.connect(onMessageReceived: (data) async {
+  //     _sensorData = SensorData(
+  //       id: 0,
+  //       temperature: (data['temperature'] ?? 0.0).toDouble(),
+  //       humidity: (data['humidity'] ?? 0.0).toDouble(),
+  //       updatedAt: DateTime.now(),
+  //     );
+
+  //     notifyListeners();
+
+  //     // Simpan ke database hanya jika perlu
+  //     await saveToDatabase();
+  //   });
+  // }
+
+  // double? _lastSavedTemp;
+  // double? _lastSavedHumidity;
+
+  // Future<void> saveToDatabase() async {
+  //   if (_lastSavedTemp == null || _lastSavedHumidity == null ||
+  //       (temperature - _lastSavedTemp!).abs() > 0.5 ||
+  //       (humidity - _lastSavedHumidity!).abs() > 1.0) {
+  //     await _sensorService.uploadSensorData(_sensorData!);
+
+  //     _lastSavedTemp = temperature;
+  //     _lastSavedHumidity = humidity;
+  //   }
+  // }
 
   String get updatedAtFormatted {
   final updatedAt = _sensorData?.updatedAt;

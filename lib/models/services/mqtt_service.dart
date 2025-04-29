@@ -1,35 +1,65 @@
-// import 'package:mqtt_client/mqtt_client.dart';
-// import 'package:mqtt_client/mqtt_server_client.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:c3_ppl_agro/const.dart';
+import 'dart:convert';
 
-// class MqttService {
-//   late MqttServerClient _client;
+class MqttService {
+  late MqttServerClient client;
 
-//   MqttService() {
-//     _client = MqttServerClient(dotenv.env['MQTT_BROKER']!, '');
-//     _client.port = int.parse(dotenv.env['MQTT_PORT']!);
-//     _client.logging(on: false);
-//     _client.keepAlivePeriod = 20;
-//   }
+  Future<void> connect({
+    required Function(Map<String, dynamic>) onMessageReceived,
+  }) async {
+    client = MqttServerClient(AppConfig.mqttBroker, '');
+    client.port = AppConfig.mqttPort;
+    client.keepAlivePeriod = 20;
+    client.onDisconnected = onDisconnected;
+    client.logging(on: true);
 
-//   Future<void> connect() async {
-//     try {
-//       _client.setProtocolV311();
-//       _client.connect(dotenv.env['MQTT_USERNAME'], dotenv.env['MQTT_PASSWORD']);
-//     } catch (e) {
-//       print("MQTT Connection Error: $e");
-//     }
-//   }
+    final connMess = MqttConnectMessage()
+        .withClientIdentifier('flutter_client_${DateTime.now().millisecondsSinceEpoch}')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    client.connectionMessage = connMess;
 
-//   void sendCommand(String deviceId, bool status) {
-//     final builder = MqttClientPayloadBuilder();
-//     builder.addString(status ? "ON" : "OFF");
+    try {
+      await client.connect();
+    } catch (e) {
+      print('MQTT connection failed: $e');
+      disconnect();
+      return;
+    }
 
-//     final topic = dotenv.env['MQTT_TOPIC']!;
-//     _client.publishMessage("$topic/$deviceId", MqttQos.atMostOnce, builder.payload!);
-//   }
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      print('Connected to MQTT broker');
 
-//   void disconnect() {
-//     _client.disconnect();
-//   }
-// }
+      client.subscribe(AppConfig.mqttTopic, MqttQos.atMostOnce);
+
+      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+        final recMess = c[0].payload as MqttPublishMessage;
+        final payload =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+        print('Received MQTT payload: $payload');
+
+        try {
+          final data = jsonDecode(payload) as Map<String, dynamic>;
+          onMessageReceived(data);
+        } catch (e) {
+          print('Error parsing MQTT message: $e');
+        }
+      });
+    } else {
+      print('Connection failed: ${client.connectionStatus}');
+      disconnect();
+    }
+  }
+
+  void disconnect() {
+    client.disconnect();
+  }
+
+  void onDisconnected() {
+    print('Disconnected from MQTT broker');
+  }
+}
+
