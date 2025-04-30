@@ -5,6 +5,7 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/auth/forgot_password.dart';
 import 'package:c3_ppl_agro/views/screens/auth/login.dart';
+import 'package:c3_ppl_agro/views/screens/auth/reset_password.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
@@ -52,6 +53,7 @@ class JanggelinApp extends StatelessWidget {
         routes: {
           '/login': (context) => Login(),
           '/forgot-password': (context) => ForgotPassword(),
+          '/reset-password': (context) => const ResetPassword(),
           '/page': (context) => const BottomNavbar(), 
         }
     );

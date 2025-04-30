@@ -41,6 +41,23 @@ class SensorService {
       ).subscribe();
   }
 
+  Future<void> updateSensorOptimalLimit({
+    required int sensorId,
+    required int optimalLimitId,
+  }) async {
+    final response = await _client.from('sensor_data').update({
+      'fk_batas': optimalLimitId,
+      'updated_at': DateTime.now().toIso8601String(),
+    })
+    .eq('id_sensor', sensorId)
+    .select();
+
+    if (response == null || response.isEmpty) {
+      throw Exception('Gagal memperbarui fk_batas sensor.');
+    }
+  }
+
+
   // Future<void> uploadSensorData(SensorData data) async {
   //   await _client.from('sensor_data').insert({
   //     'temperature': data.temperature,

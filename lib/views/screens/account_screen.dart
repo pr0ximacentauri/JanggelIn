@@ -44,7 +44,7 @@ class AccountContent extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      authVM.currentUserEmail ?? 'Belum ada akun',
+                      'Owner' ?? 'Belum ada akun',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -58,7 +58,7 @@ class AccountContent extends StatelessWidget{
               leading: const Icon(Icons.account_circle_sharp),
               title: const Text('Ubah Password'),
               onTap: () {
-                Navigator.pushNamed(context, '/forgot-password');
+                Navigator.pushNamed(context, '/reset-password');
               },
             ),
             const Divider(thickness: 1, color: Colors.grey),

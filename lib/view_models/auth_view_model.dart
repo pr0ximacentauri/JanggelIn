@@ -1,5 +1,6 @@
 import 'package:c3_ppl_agro/models/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthViewModel with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -55,6 +56,23 @@ class AuthViewModel with ChangeNotifier {
       return true;
     } catch (e) {
       _error = e.toString().replaceAll("Exception:", "").trim();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> changePassword(String newPassword) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await Supabase.instance.client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+      return true;
+    } catch (e) {
+      _error = e.toString();
       return false;
     } finally {
       _isLoading = false;

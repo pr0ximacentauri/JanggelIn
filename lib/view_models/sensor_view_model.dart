@@ -30,10 +30,30 @@ class SensorViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> actuatorControl(
-    OptimalLimitViewModel optimalVM,
-    ControlViewModel controlVM,
-  ) async {
+  Future<void> setSensorOptimalLimit(int optimalLimitId) async {
+    if (_sensorData == null) return;
+
+    await _sensorService.updateSensorOptimalLimit(
+      sensorId: _sensorData!.id,
+      optimalLimitId: optimalLimitId,
+    );
+    
+
+    // Perbarui lokal biar tampilan ikut berubah
+    _sensorData = SensorData(
+      id: _sensorData!.id,
+      temperature: _sensorData!.temperature,
+      humidity: _sensorData!.humidity,
+      createdAt: _sensorData!.createdAt,
+      updatedAt: DateTime.now(),
+      fkOptimalLimit: optimalLimitId,
+    );
+
+    notifyListeners();
+  }
+
+
+  Future<void> actuatorControl(OptimalLimitViewModel optimalVM, ControlViewModel controlVM) async {
     if (_sensorData == null || optimalVM.limit == null) return;
 
     final limit = optimalVM.limit!;

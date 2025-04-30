@@ -40,7 +40,8 @@ class SensorCard extends StatelessWidget {
 
     // nanti dihapus kalo udah :)
     print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
-    print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
+    // print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
+    // print('Optimal Humidity: ${optimalVM.limit?.minHumidity} - ${optimalVM.limit?.maxHumidity}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,6 +68,7 @@ class SensorCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+               if(sensorVM.hasSensorData) ...[
                 Text(
                   valueText,
                   style: const TextStyle(
@@ -75,7 +77,6 @@ class SensorCard extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-               if(sensorVM.hasSensorData) ...[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -91,6 +92,14 @@ class SensorCard extends StatelessWidget {
                   ),
                 )
               ]else ...[
+                Text(
+                  "None",
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 6),
                   decoration: BoxDecoration(
