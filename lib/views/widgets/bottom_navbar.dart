@@ -1,5 +1,3 @@
-
-
 import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:c3_ppl_agro/views/screens/control_screen.dart';
 import 'package:c3_ppl_agro/views/screens/history_screen.dart';
@@ -7,14 +5,21 @@ import 'package:c3_ppl_agro/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavbar extends StatefulWidget {
-  const BottomNavbar({super.key});
+  final int initialIndex;
+  const BottomNavbar({super.key, this.initialIndex = 0}); // Default ke tab Beranda
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     HomeContent(),
