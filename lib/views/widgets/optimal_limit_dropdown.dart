@@ -1,6 +1,8 @@
 import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+
 
 class OptimalLimitDropdown extends StatefulWidget {
   final List<OptimalLimit> limits;
@@ -25,9 +27,8 @@ class _OptimalLimitDropdownState extends State<OptimalLimitDropdown> {
 
     final currentFk = widget.sensorVM.sensorData?.fkOptimalLimit;
 
-    selectedLimit = widget.limits.firstWhere(
+    selectedLimit = widget.limits.firstWhereOrNull(
       (limit) => limit.id == currentFk,
-      // orElse: () => null,
     );
   }
 

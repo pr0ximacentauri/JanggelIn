@@ -114,8 +114,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                         content: const Text("Password berhasil diubah."),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pushReplacementNamed(context, '/page');
+                            },
                             child: const Text("OK"),
+
                           ),
                         ],
                       ),
