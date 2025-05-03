@@ -6,6 +6,9 @@ class SensorData {
   DateTime createdAt;
   DateTime updatedAt;
   int? fkOptimalLimit;
+  int? fkPompa;
+  int? fkKipas;
+  int? fkLampu;
 
   SensorData({
     required this.id,
@@ -14,6 +17,9 @@ class SensorData {
     required this.createdAt,
     required this.updatedAt,
     this.fkOptimalLimit,
+    this.fkPompa,
+    this.fkKipas,
+    this.fkLampu
   });
 
   Map<String, dynamic> toJson() {
@@ -24,6 +30,9 @@ class SensorData {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'fk_batas': fkOptimalLimit,
+      'fk_kontrol_1': fkPompa,
+      'fk_kontrol_2': fkKipas,
+      'fk_kontrol_3': fkLampu
     };
   }
 
@@ -35,6 +44,9 @@ class SensorData {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       fkOptimalLimit: json['fk_batas'],
+      fkPompa: json['fk_kontrol_1'],
+      fkKipas: json['fk_kontrol_2'],
+      fkLampu: json['fk_kontrol_3'],
     );
   }
 }

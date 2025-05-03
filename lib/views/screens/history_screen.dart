@@ -26,37 +26,40 @@ class _HistoryContentState extends State<HistoryContent> {
 
   final List<Map<String, dynamic>> dummyLogs = [
     {
-      'timestamp': '29-04-2025 08:30',
+      'updatedAt': '29-04-2025 08:30',
       'temperature': 27.5,
       'humidity': 75.0,
       'minTemp': 25.0,
       'maxTemp': 30.0,
       'minHumid': 70.0,
+      'maxHumid': 100.0,
       'actuators': {'lampu': 'OFF', 'kipas': 'OFF', 'pompa': 'OFF'}
     },
     {
-      'timestamp': '29-04-2025 08:00',
+      'updatedAt': '29-04-2025 08:00',
       'temperature': 24.0,
       'humidity': 68.0,
       'minTemp': 25.0,
       'maxTemp': 30.0,
       'minHumid': 70.0,
-      'actuators': {'lampu': 'ON', 'kipas': 'OFF', 'pompa': 'ON'}
+      'maxHumid': 100.0,
+      'actuators': {'lampu': 'ON', 'kipas': 'OFF', 'pompa': 'ON'} //id 1: kipas, id 2: pompa, id 3: lampu
     },
     {
-      'timestamp': '29-04-2025 07:30',
+      'updatedAt': '29-04-2025 07:30',
       'temperature': 31.2,
       'humidity': 72.0,
       'minTemp': 25.0,
       'maxTemp': 30.0,
       'minHumid': 70.0,
+      'maxHumid': 100.0,
       'actuators': {'lampu': 'OFF', 'kipas': 'ON', 'pompa': 'OFF'}
     },
   ];
 
   List<Map<String, dynamic>> _filterLogsByDate(String targetDate) {
     return dummyLogs
-        .where((log) => log['timestamp'].startsWith(targetDate))
+        .where((log) => log['updatedAt'].startsWith(targetDate))
         .toList();
   }
 
@@ -167,7 +170,7 @@ class _HistoryContentState extends State<HistoryContent> {
           rows: logs.map((log) {
             return DataRow(
               cells: [
-                DataCell(Text(log['timestamp'])),
+                DataCell(Text(log['updatedAt'])),
                 DataCell(Text('${log['temperature']} °C')),
                 DataCell(Text('${log['humidity']} %')),
                 DataCell(Text(log['actuators']['lampu'])),

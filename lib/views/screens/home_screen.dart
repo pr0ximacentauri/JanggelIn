@@ -19,7 +19,6 @@ class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-    final optimalVM = Provider.of<OptimalLimitViewModel>(context);
 
     return Scaffold(
       backgroundColor: Color(0xFFC8DCC3),
@@ -81,15 +80,15 @@ class HomeContent extends StatelessWidget {
       ),
       body: Column(
         children: [
-          SizedBox(height: 20),
-          Text("Pilih batas optimal:"),
-            if (optimalVM.limits.isEmpty)
-              CircularProgressIndicator()
-            else
-              OptimalLimitDropdown(
-                limits: optimalVM.limits,
-                sensorVM: sensorVM,
-              ),
+          // SizedBox(height: 20),
+          // Text("Pilih batas optimal:"),
+          //   if (optimalVM.limits.isEmpty)
+          //     CircularProgressIndicator()
+          //   else
+          //     OptimalLimitDropdown(
+          //       limits: optimalVM.limits,
+          //       sensorVM: sensorVM,
+          //     ),
           SizedBox(height: 20),
             SensorCard(
               title: 'Suhu saat ini',

@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 
 class ControlViewModel with ChangeNotifier {
   final ControlService _controlService = ControlService();
+  
   List<Control> _controls = [];
-
   List<Control> get controls => _controls;
 
   ControlViewModel() {
@@ -26,7 +26,7 @@ class ControlViewModel with ChangeNotifier {
   }
 
   Control getControlById(int id) {
-    return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, name: 'Unknown', status: 'OFF'));
+    return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, name: 'Unknown', status: 'OFF', updatedAt: DateTime.now()));
   }
 
   Future<void> setControlStatus(int id, String newStatus) async {

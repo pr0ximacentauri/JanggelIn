@@ -32,7 +32,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xFFC8DCC3),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: _pages[_selectedIndex],

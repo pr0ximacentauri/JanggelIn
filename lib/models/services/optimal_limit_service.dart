@@ -38,7 +38,7 @@ class OptimalLimitService {
     required double minHumidity,
     required double maxHumidity,
   }) async {
-    final existing = await _client
+    await _client
         .from('batas_optimal')
         .select('id_batas')
         .limit(1)

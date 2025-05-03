@@ -1,7 +1,9 @@
 import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
+import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
@@ -46,6 +48,9 @@ class _ControlContentState extends State<ControlContent> {
 
   @override
   Widget build(BuildContext context) {
+    final optimalVM = Provider.of<OptimalLimitViewModel>(context);
+    final sensorVM = Provider.of<SensorViewModel>(context);
+
     return Consumer2<ControlViewModel, OptimalLimitViewModel>(
       builder: (context, controlVM, optimalLimitVM, _) {
         final pompa = controlVM.getControlById(1);
@@ -72,6 +77,15 @@ class _ControlContentState extends State<ControlContent> {
                   AktuatorStatus(control: lampu),
                   const Divider(thickness: 1, color: Colors.grey),
 
+                  SizedBox(height: 20),
+                  Text("Pilih batas optimal:"),
+                    if (optimalVM.limits.isEmpty)
+                      CircularProgressIndicator()
+                    else
+                      OptimalLimitDropdown(
+                        limits: optimalVM.limits,
+                        sensorVM: sensorVM,
+                    ),
                   Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
                   const SizedBox(height: 16),
