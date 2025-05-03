@@ -1,7 +1,5 @@
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
-import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/sensor_card.dart';
@@ -80,15 +78,6 @@ class HomeContent extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // SizedBox(height: 20),
-          // Text("Pilih batas optimal:"),
-          //   if (optimalVM.limits.isEmpty)
-          //     CircularProgressIndicator()
-          //   else
-          //     OptimalLimitDropdown(
-          //       limits: optimalVM.limits,
-          //       sensorVM: sensorVM,
-          //     ),
           SizedBox(height: 20),
             SensorCard(
               title: 'Suhu saat ini',

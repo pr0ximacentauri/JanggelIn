@@ -1,8 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:c3_ppl_agro/models/sensor_data.dart';
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
+import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -24,45 +27,12 @@ class HistoryContent extends StatefulWidget {
 class _HistoryContentState extends State<HistoryContent> {
   DateTime? selectedDate;
 
-  final List<Map<String, dynamic>> dummyLogs = [
-    {
-      'updatedAt': '29-04-2025 08:30',
-      'temperature': 27.5,
-      'humidity': 75.0,
-      'minTemp': 25.0,
-      'maxTemp': 30.0,
-      'minHumid': 70.0,
-      'maxHumid': 100.0,
-      'actuators': {'lampu': 'OFF', 'kipas': 'OFF', 'pompa': 'OFF'}
-    },
-    {
-      'updatedAt': '29-04-2025 08:00',
-      'temperature': 24.0,
-      'humidity': 68.0,
-      'minTemp': 25.0,
-      'maxTemp': 30.0,
-      'minHumid': 70.0,
-      'maxHumid': 100.0,
-      'actuators': {'lampu': 'ON', 'kipas': 'OFF', 'pompa': 'ON'} //id 1: kipas, id 2: pompa, id 3: lampu
-    },
-    {
-      'updatedAt': '29-04-2025 07:30',
-      'temperature': 31.2,
-      'humidity': 72.0,
-      'minTemp': 25.0,
-      'maxTemp': 30.0,
-      'minHumid': 70.0,
-      'maxHumid': 100.0,
-      'actuators': {'lampu': 'OFF', 'kipas': 'ON', 'pompa': 'OFF'}
-    },
-  ];
-
-  List<Map<String, dynamic>> _filterLogsByDate(String targetDate) {
-    return dummyLogs
-        .where((log) => log['updatedAt'].startsWith(targetDate))
-        .toList();
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<SensorViewModel>(context, listen: false);
+    viewModel.getSensorHistory();
   }
-
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -85,13 +55,23 @@ class _HistoryContentState extends State<HistoryContent> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SensorViewModel>(context);
+    final history = viewModel.sensorHistory;
+
+    if(history.isEmpty){
+      return const Center(child: CircularProgressIndicator());
+    }
     String today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     String? selected = selectedDate != null
         ? DateFormat('dd-MM-yyyy').format(selectedDate!)
         : null;
+    final todayLogs = history.where((log) =>
+        DateFormat('dd-MM-yyyy').format(log.updatedAt) == today).toList();
 
-    final todayLogs = _filterLogsByDate(today);
-    final filteredLogs = selected != null ? _filterLogsByDate(selected) : dummyLogs;
+    final filteredLogs = selected != null
+        ? history.where((log) =>
+            DateFormat('dd-MM-yyyy').format(log.updatedAt) == selected).toList()
+        : history;
 
     return Scaffold(
       backgroundColor: const Color(0xFFC8DCC3),
@@ -148,7 +128,7 @@ class _HistoryContentState extends State<HistoryContent> {
     );
   }
 
-  Widget _buildDataTable(List<Map<String, dynamic>> logs) {
+  Widget _buildDataTable(List<SensorData> logs) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
@@ -170,12 +150,12 @@ class _HistoryContentState extends State<HistoryContent> {
           rows: logs.map((log) {
             return DataRow(
               cells: [
-                DataCell(Text(log['updatedAt'])),
-                DataCell(Text('${log['temperature']} °C')),
-                DataCell(Text('${log['humidity']} %')),
-                DataCell(Text(log['actuators']['lampu'])),
-                DataCell(Text(log['actuators']['kipas'])),
-                DataCell(Text(log['actuators']['pompa'])),
+                DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.updatedAt))),
+                DataCell(Text('${log.temperature} °C')),
+                DataCell(Text('${log.humidity} %')),
+                DataCell(Text(log.statusLampu)),
+                DataCell(Text(log.statusKipas)),
+                DataCell(Text(log.statusPompa)),
               ],
             );
           }).toList(),

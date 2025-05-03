@@ -48,14 +48,12 @@ class _ControlContentState extends State<ControlContent> {
 
   @override
   Widget build(BuildContext context) {
-    final optimalVM = Provider.of<OptimalLimitViewModel>(context);
-    final sensorVM = Provider.of<SensorViewModel>(context);
-
-    return Consumer2<ControlViewModel, OptimalLimitViewModel>(
-      builder: (context, controlVM, optimalLimitVM, _) {
-        final pompa = controlVM.getControlById(1);
-        final kipas = controlVM.getControlById(2);
-        final lampu = controlVM.getControlById(3);
+    return Consumer2<SensorViewModel, OptimalLimitViewModel>(
+      builder: (context, sensorVM, optimalLimitVM, _) {
+        final latestSensor =  sensorVM.sensorData;
+        final pompa = latestSensor?.statusPompa ?? "OFF";
+        final kipas = latestSensor?.statusKipas ?? "OFF";
+        final lampu = latestSensor?.statusLampu ?? "OFF";
         final limit = optimalLimitVM.limit;
 
         if (MinSuhuTxt.text.isEmpty && limit != null) {
@@ -70,20 +68,20 @@ class _ControlContentState extends State<ControlContent> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  AktuatorStatus(control: pompa),
+                  AktuatorStatus(name: "Pompa Air", status: pompa), 
                   const SizedBox(height: 16),
-                  AktuatorStatus(control: kipas),
+                  AktuatorStatus(name: "Kipas Exhaust", status: kipas),
                   const SizedBox(height: 16),
-                  AktuatorStatus(control: lampu),
+                  AktuatorStatus(name: "Lampu Pijar", status: lampu),
                   const Divider(thickness: 1, color: Colors.grey),
 
                   SizedBox(height: 20),
                   Text("Pilih batas optimal:"),
-                    if (optimalVM.limits.isEmpty)
+                    if (optimalLimitVM.limits.isEmpty)
                       CircularProgressIndicator()
                     else
                       OptimalLimitDropdown(
-                        limits: optimalVM.limits,
+                        limits: optimalLimitVM.limits,
                         sensorVM: sensorVM,
                     ),
                   Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

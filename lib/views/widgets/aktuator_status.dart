@@ -1,23 +1,24 @@
-import 'package:c3_ppl_agro/models/control.dart';
 import 'package:flutter/material.dart';
 
 class AktuatorStatus extends StatelessWidget {
-  final Control control;
+  final String name;
+  final String status;
 
   const AktuatorStatus({
     super.key,
-    required this.control,
+    required this.name,
+    required this.status,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isOn = control.status == 'ON';
+    final bool isOn = status == 'ON';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          control.name,
+          name,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         ElevatedButton.icon(
