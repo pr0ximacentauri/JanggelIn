@@ -20,7 +20,7 @@ class SensorService {
     final response = await _client
         .from('sensor_data')
         .select()
-        .order('updated_at', ascending: false);
+        .order('created_at', ascending: true);
 
     return (response as List)
         .map((json) => SensorData.fromJson(json))
@@ -57,36 +57,6 @@ class SensorService {
     }
   }
 
-   Future<SensorData?> updatePumpStatusById(int id, String newStatus) async {
-    final response = await _client
-        .from('sensor_data')
-        .update({'status_pompa': newStatus})
-        .eq('id_sensor', id)
-        .select()
-        .maybeSingle();
-    if (response == null) return null;
-    return SensorData.fromJson(response);
-  }
-  Future<SensorData?> updateFanStatusById(int id, String newStatus) async {
-    final response = await _client
-        .from('sensor_data')
-        .update({'status_kipas': newStatus})
-        .eq('id_sensor', id)
-        .select()
-        .maybeSingle();
-    if (response == null) return null;
-    return SensorData.fromJson(response);
-  }
-     Future<SensorData?> updateLampStatusById(int id, String newStatus) async {
-    final response = await _client
-        .from('sensor_data')
-        .update({'status_lampu': newStatus})
-        .eq('id_sensor', id)
-        .select()
-        .maybeSingle();
-    if (response == null) return null;
-    return SensorData.fromJson(response);
-  }
 
   // Future<void> uploadSensorData(SensorData data) async {
   //   await _client.from('sensor_data').insert({

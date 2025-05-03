@@ -18,8 +18,16 @@ class SensorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-    final optimalVM = Provider.of<OptimalLimitViewModel>(context, listen: false);
-    final controlVM = Provider.of<ControlViewModel>(context, listen: false);
+    final optimalVM = Provider.of<OptimalLimitViewModel>(context);
+    final controlVM = Provider.of<ControlViewModel>(context);
+
+    final optimalLimit = optimalVM.getById(sensorVM.sensorData?.fkOptimalLimit);
+
+    if (optimalLimit == null) {
+      return Center(
+        child: Text('Belum Ditemukan Batas Optimal!'),
+      );
+    } 
 
     String valueText = 'None';
     if (value == 'temperature') {
@@ -28,20 +36,22 @@ class SensorCard extends StatelessWidget {
       valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
     }
 
+    // Evaluasi apakah nilai saat ini optimal atau tidak
     bool isOptimal = (value == 'temperature')
-      ? optimalVM.isTemperatureOptimal(sensorVM.temperature)
-      : optimalVM.isHumidityOptimal(sensorVM.humidity);
+      ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
+      : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
 
     String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
 
+    // Jalankan actuator kontrol berdasarkan limit dari FK
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sensorVM.actuatorControl(optimalVM, controlVM);
     });
 
     // nanti dihapus kalo udah :)
-    print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
-    print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
-    print('Optimal Humidity: ${optimalVM.limit?.minHumidity} - ${optimalVM.limit?.maxHumidity}');
+    // print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
+    // print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
+    // print('Optimal Humidity: ${optimalVM.limit?.minHumidity} - ${optimalVM.limit?.maxHumidity}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

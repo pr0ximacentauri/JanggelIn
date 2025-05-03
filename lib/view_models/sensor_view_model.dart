@@ -1,3 +1,7 @@
+import 'package:c3_ppl_agro/models/control.dart';
+import 'package:c3_ppl_agro/models/optimal_limit.dart';
+import 'package:c3_ppl_agro/models/services/control_service.dart';
+import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:c3_ppl_agro/models/sensor_data.dart';
 import 'package:c3_ppl_agro/models/services/sensor_service.dart';
@@ -7,6 +11,8 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
+  final OptimalLimitService _optimalLimitService = OptimalLimitService();
+  final ControlService _controlService = ControlService();
   final MqttService _mqttService = MqttService();
   
   SensorData? _sensorData;
@@ -18,6 +24,8 @@ class SensorViewModel with ChangeNotifier {
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
   List<SensorData> get sensorHistory => _sensorHistory;
+  // List<OptimalLimit> get optimalLimitHistory => _optimalLimitHistory;
+  // List<Control> get controlHistory => _controlHistory;
 
   SensorViewModel() {
     getSensorData();
@@ -30,6 +38,7 @@ class SensorViewModel with ChangeNotifier {
     });
     // listenToMqttSensorData();
   }
+
 
   Future<void> getSensorData() async {
     _sensorData = await _sensorService.fetchLatestSensorData();
@@ -74,7 +83,6 @@ class SensorViewModel with ChangeNotifier {
   }
 
 
-// untuk menyalakan aktuator secara otomatis berdasarkan batas optimal
   Future<void> actuatorControl(OptimalLimitViewModel optimalVM, ControlViewModel controlVM) async {
     if (_sensorData == null || optimalVM.limit == null) return;
 
@@ -84,13 +92,13 @@ class SensorViewModel with ChangeNotifier {
 
     // lampu pijar(3), kipas(2), pompa air(1)
     if (temp < limit.minTemperature) {
-      await controlVM.setLampStatus('ON');
-    }else if (temp > limit.maxTemperature) {
-      await controlVM.setFanStatus('ON');
+      await controlVM.setControlStatus(3, 'ON');
+    }else if (temp > limit.maxTemperature || humid > limit.maxHumidity) {
+      await controlVM.setControlStatus(2, 'ON');
     }
 
     if (humid < limit.minHumidity) {
-      await controlVM.setPumpStatus('ON');
+      await controlVM.setControlStatus(1, 'ON');
     }
   }
 

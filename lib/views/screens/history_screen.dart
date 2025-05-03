@@ -129,36 +129,32 @@ class _HistoryContentState extends State<HistoryContent> {
   }
 
   Widget _buildDataTable(List<SensorData> logs) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      color: Colors.white,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          headingRowColor: MaterialStateProperty.all(const Color(0xFF5E7154)),
-          headingTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          columnSpacing: 16,
-          columns: const [
-            DataColumn(label: Text('Waktu')),
-            DataColumn(label: Text('Suhu')),
-            DataColumn(label: Text('Kelembapan')),
-            DataColumn(label: Text('Lampu')),
-            DataColumn(label: Text('Kipas')),
-            DataColumn(label: Text('Pompa')),
-          ],
-          rows: logs.map((log) {
-            return DataRow(
-              cells: [
-                DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.updatedAt))),
-                DataCell(Text('${log.temperature} °C')),
-                DataCell(Text('${log.humidity} %')),
-                DataCell(Text(log.statusLampu)),
-                DataCell(Text(log.statusKipas)),
-                DataCell(Text(log.statusPompa)),
-              ],
-            );
-          }).toList(),
+    return Center(
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 4,
+        color: Colors.white,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            headingRowColor: MaterialStateProperty.all(const Color(0xFF5E7154)),
+            headingTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            columnSpacing: 16,
+            columns: const [
+              DataColumn(label: Text('Waktu')),
+              DataColumn(label: Text('Suhu')),
+              DataColumn(label: Text('Kelembapan')),
+            ],
+            rows: logs.map((log) {
+              return DataRow(
+                cells: [
+                  DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.updatedAt))),
+                  DataCell(Text('${log.temperature} °C')),
+                  DataCell(Text('${log.humidity} %')),
+                ],
+              );
+            }).toList(),
+          ),
         ),
       ),
     );

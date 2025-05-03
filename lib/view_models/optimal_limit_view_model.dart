@@ -1,6 +1,7 @@
 import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 class OptimalLimitViewModel with ChangeNotifier {
   final OptimalLimitService _optimalLimitervice = OptimalLimitService();
@@ -35,6 +36,10 @@ class OptimalLimitViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  OptimalLimit? getById(int? id) {
+    return limits.firstWhereOrNull((opt) => opt.id == id);
+  }
+
   Future<void> updateOptimalLimit({
     required double minTemperature,
     required double maxTemperature,
@@ -51,14 +56,14 @@ class OptimalLimitViewModel with ChangeNotifier {
     await getOptimalLimit();
   }
 
-  bool isTemperatureOptimal(double temperature) {
-    if (_limit == null) return true;
-    return temperature >= _limit!.minTemperature && temperature <= _limit!.maxTemperature;
+  bool isTemperatureOptimal(double temperature, OptimalLimit limit) {
+    // if (_limit == null) return true;
+    return temperature >= limit.minTemperature && temperature <= limit.maxTemperature;
   }
 
-  bool isHumidityOptimal(double humidity) {
-    if (_limit == null) return true;
-    return humidity >= _limit!.minHumidity && humidity <= _limit!.maxHumidity;
+  bool isHumidityOptimal(double humidity, OptimalLimit limit) {
+    // if (_limit == null) return true;
+    return humidity >= limit.minHumidity && humidity <= limit.maxHumidity;
   }
   
 }
