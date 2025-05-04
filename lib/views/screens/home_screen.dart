@@ -1,7 +1,5 @@
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
-import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/sensor_card.dart';
@@ -19,7 +17,7 @@ class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-
+    
     return Scaffold(
       backgroundColor: Color(0xFFC8DCC3),
       appBar: PreferredSize(

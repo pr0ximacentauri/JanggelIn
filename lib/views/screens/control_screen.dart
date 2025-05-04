@@ -48,7 +48,6 @@ class _ControlContentState extends State<ControlContent> {
 
   @override
   Widget build(BuildContext context) {
-    final optimalVM = Provider.of<OptimalLimitViewModel>(context);
     final sensorVM = Provider.of<SensorViewModel>(context);
 
     return Consumer2<ControlViewModel, OptimalLimitViewModel>(
@@ -79,11 +78,11 @@ class _ControlContentState extends State<ControlContent> {
 
                   SizedBox(height: 20),
                   Text("Pilih batas optimal:"),
-                    if (optimalVM.limits.isEmpty)
+                    if (optimalLimitVM.limits.isEmpty)
                       CircularProgressIndicator()
                     else
                       OptimalLimitDropdown(
-                        limits: optimalVM.limits,
+                        limits: optimalLimitVM.limits,
                         sensorVM: sensorVM,
                     ),
                   Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

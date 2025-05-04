@@ -11,14 +11,6 @@ class AuthService {
     return response;
   }
 
-  // Future<AuthResponse> register({required String email, required String password}) async {
-  //   final response = await _client.auth.signUp(
-  //     email: email,
-  //     password: password,
-  //   );
-  //   return response;
-  // }
-
   Future<void> forgotPassword(String email) async {
   return _client.auth.resetPasswordForEmail(email);
 }

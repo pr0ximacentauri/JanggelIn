@@ -1,6 +1,7 @@
 import 'package:c3_ppl_agro/const.dart';
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
+import 'package:c3_ppl_agro/models/services/notification_service.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/auth/forgot_password.dart';
@@ -19,6 +20,7 @@ void main() async{
     url: AppConfig.supabaseUrl,
     anonKey: AppConfig.supabaseAnonKey,
   );
+  await NotificationService.init();
   // print("MQTT Broker: ${AppConfig.mqttBroker}");
   runApp(
     DevicePreview(

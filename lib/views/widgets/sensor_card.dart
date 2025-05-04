@@ -25,7 +25,7 @@ class SensorCard extends StatelessWidget {
 
     if (optimalLimit == null) {
       return Center(
-        child: Text('Belum Ditemukan Batas Optimal!'),
+        child: Text(''),
       );
     } 
 
@@ -36,14 +36,12 @@ class SensorCard extends StatelessWidget {
       valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
     }
 
-    // Evaluasi apakah nilai saat ini optimal atau tidak
     bool isOptimal = (value == 'temperature')
       ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
       : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
 
     String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
 
-    // Jalankan actuator kontrol berdasarkan limit dari FK
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sensorVM.actuatorControl(optimalVM, controlVM);
     });

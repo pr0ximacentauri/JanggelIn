@@ -1,7 +1,4 @@
-import 'package:c3_ppl_agro/models/control.dart';
-import 'package:c3_ppl_agro/models/optimal_limit.dart';
-import 'package:c3_ppl_agro/models/services/control_service.dart';
-import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
+import 'package:c3_ppl_agro/models/services/notification_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:c3_ppl_agro/models/sensor_data.dart';
 import 'package:c3_ppl_agro/models/services/sensor_service.dart';
@@ -11,27 +8,19 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
-  final OptimalLimitService _optimalLimitService = OptimalLimitService();
-  final ControlService _controlService = ControlService();
   final MqttService _mqttService = MqttService();
   
   SensorData? _sensorData;
   List<SensorData> _sensorHistory = [];
-  // final List<OptimalLimit> _optimalLimitHistory = [];
-  // final List<Control> _controlHistory = [];
   SensorData? get sensorData => _sensorData;
   bool get hasSensorData => _sensorData != null;
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
   List<SensorData> get sensorHistory => _sensorHistory;
-  // List<OptimalLimit> get optimalLimitHistory => _optimalLimitHistory;
-  // List<Control> get controlHistory => _controlHistory;
 
   SensorViewModel() {
     getSensorData();
-    getSensorHistory();
-    // getOptimalLimitHistory();
-    // getControlHistory();
+    getSensorHistory();;
     _sensorService.listenToSensorUpdates((newData) {
       _sensorData = newData;
       notifyListeners();
@@ -48,18 +37,6 @@ class SensorViewModel with ChangeNotifier {
     _sensorHistory = await _sensorService.fetchAllSensorData();
     notifyListeners();
   }
-  // Future<List<OptimalLimit>> getOptimalLimitHistory() async {
-  //   final response = await _optimalLimitService.fetchAllOptimalLimits();
-  //   _optimalLimitHistory.clear();
-  //   _optimalLimitHistory.addAll(response);
-  //   return response;
-  // }
-  // Future<List<Control>> getControlHistory() async {
-  //   final response = await _controlService.fetchAllControls();
-  //   _controlHistory.clear();
-  //   _controlHistory.addAll(response);
-  //   return response;
-  // }
 
 
   Future<void> setSensorOptimalLimit(int optimalLimitId) async {
@@ -93,12 +70,30 @@ class SensorViewModel with ChangeNotifier {
     // lampu pijar(3), kipas(2), pompa air(1)
     if (temp < limit.minTemperature) {
       await controlVM.setControlStatus(3, 'ON');
-    }else if (temp > limit.maxTemperature || humid > limit.maxHumidity) {
+      await NotificationService.showNotification(
+        title: 'Suhu Terlalu Rendah',
+        body: 'Menyalakan lampu pijar karena suhu $temp°C',
+      );
+    }else if (temp > limit.maxTemperature) {
       await controlVM.setControlStatus(2, 'ON');
+      await NotificationService.showNotification(
+        title: 'Suhu Terlalu Tinggi',
+        body: 'Menyalakan kipas karena suhu $temp°C',
+      );
     }
 
     if (humid < limit.minHumidity) {
       await controlVM.setControlStatus(1, 'ON');
+      await NotificationService.showNotification(
+        title: 'Kelembapan Terlalu Rendah',
+        body: 'Menyalakan pompa air karena suhu $temp°C',
+      );
+    }else if (humid > limit.maxHumidity) {
+      await controlVM.setControlStatus(2, 'ON');
+      await NotificationService.showNotification(
+        title: 'Kelembapan Terlalu Tinggi',
+        body: 'Menyalakan kipas karena suhu $temp°C',
+      );
     }
   }
 
@@ -143,5 +138,4 @@ class SensorViewModel with ChangeNotifier {
         '${updatedAt.hour.toString().padLeft(2, '0')}:'
         '${updatedAt.minute.toString().padLeft(2, '0')}';
   }
-
 }

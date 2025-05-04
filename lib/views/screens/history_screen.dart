@@ -1,11 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:c3_ppl_agro/models/sensor_data.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
+import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
+import 'package:c3_ppl_agro/models/sensor_data.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -116,8 +116,6 @@ class _HistoryContentState extends State<HistoryContent> {
       ),
     );
   }
-
-
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -148,7 +146,7 @@ class _HistoryContentState extends State<HistoryContent> {
             rows: logs.map((log) {
               return DataRow(
                 cells: [
-                  DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.updatedAt))),
+                  DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.createdAt))),
                   DataCell(Text('${log.temperature} °C')),
                   DataCell(Text('${log.humidity} %')),
                 ],

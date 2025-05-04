@@ -20,7 +20,7 @@ class SensorService {
     final response = await _client
         .from('sensor_data')
         .select()
-        .order('created_at', ascending: true);
+        .order('created_at', ascending: false);
 
     return (response as List)
         .map((json) => SensorData.fromJson(json))
