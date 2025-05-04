@@ -9,18 +9,21 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
   final MqttService _mqttService = MqttService();
+  final OptimalLimitViewModel optimalLimitVM;
   
   SensorData? _sensorData;
+  double? _lastSavedTemperature;
+  double? _lastSavedHumidity;
   List<SensorData> _sensorHistory = [];
   SensorData? get sensorData => _sensorData;
   bool get hasSensorData => _sensorData != null;
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
   List<SensorData> get sensorHistory => _sensorHistory;
-
-  SensorViewModel() {
+  
+  SensorViewModel(this.optimalLimitVM) {
     getSensorData();
-    getSensorHistory();;
+    getSensorHistory();
     _sensorService.listenToSensorUpdates((newData) {
       _sensorData = newData;
       notifyListeners();
@@ -55,7 +58,7 @@ class SensorViewModel with ChangeNotifier {
       updatedAt: DateTime.now(),
       fkOptimalLimit: optimalLimitId,
     );
-
+    optimalLimitVM.syncSelectedLimitWithSensor(optimalLimitId);
     notifyListeners();
   }
 
@@ -67,33 +70,55 @@ class SensorViewModel with ChangeNotifier {
     final temp = temperature;
     final humid = humidity;
 
+    if(_lastSavedTemperature == temp && _lastSavedHumidity == humid) return;
+
+    final isTempOptimal = optimalVM.isTemperatureOptimal(temp, limit);
+    final isHumidOptimal = optimalVM.isHumidityOptimal(humid, limit);
+
     // lampu pijar(3), kipas(2), pompa air(1)
-    if (temp < limit.minTemperature) {
+    if (isTempOptimal && isHumidOptimal) {
+      await controlVM.setControlStatus(1, 'OFF'); 
+      await controlVM.setControlStatus(2, 'OFF');
+      await controlVM.setControlStatus(3, 'OFF');
+      return;
+    }
+    
+    if (!isTempOptimal && temp <= limit.minTemperature) {
       await controlVM.setControlStatus(3, 'ON');
       await NotificationService.showNotification(
         title: 'Suhu Terlalu Rendah',
         body: 'Menyalakan lampu pijar karena suhu $temp°C',
       );
-    }else if (temp > limit.maxTemperature) {
+    } else {
+      await controlVM.setControlStatus(3, 'OFF');
+    }
+
+    if (!isTempOptimal && temp >= limit.maxTemperature) {
       await controlVM.setControlStatus(2, 'ON');
       await NotificationService.showNotification(
         title: 'Suhu Terlalu Tinggi',
         body: 'Menyalakan kipas karena suhu $temp°C',
       );
+    } else if (isTempOptimal && humid <= limit.maxHumidity) {
+      await controlVM.setControlStatus(2, 'OFF');
     }
 
-    if (humid < limit.minHumidity) {
-      await controlVM.setControlStatus(1, 'ON');
-      await NotificationService.showNotification(
-        title: 'Kelembapan Terlalu Rendah',
-        body: 'Menyalakan pompa air karena suhu $temp°C',
-      );
-    }else if (humid > limit.maxHumidity) {
+    if (!isHumidOptimal && humid >= limit.maxHumidity) {
       await controlVM.setControlStatus(2, 'ON');
       await NotificationService.showNotification(
         title: 'Kelembapan Terlalu Tinggi',
-        body: 'Menyalakan kipas karena suhu $temp°C',
+        body: 'Menyalakan kipas karena kelembapan $humid%',
       );
+    }
+
+    if (!isHumidOptimal && humid <= limit.minHumidity) {
+      await controlVM.setControlStatus(1, 'ON');
+      await NotificationService.showNotification(
+        title: 'Kelembapan Terlalu Rendah',
+        body: 'Menyalakan pompa air karena kelembapan $humid%',
+      );
+    } else {
+      await controlVM.setControlStatus(1, 'OFF');
     }
   }
 

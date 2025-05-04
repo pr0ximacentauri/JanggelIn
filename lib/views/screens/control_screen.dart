@@ -4,6 +4,7 @@ import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
@@ -27,6 +28,7 @@ class _ControlContentState extends State<ControlContent> {
   final MaxSuhuTxt = TextEditingController();
   final MinKelembapanTxt = TextEditingController();
   final MaxKelembapanTxt = TextEditingController();
+  bool _isInitialized = false;
 
   @override
   void dispose() {
@@ -48,17 +50,20 @@ class _ControlContentState extends State<ControlContent> {
 
   @override
   Widget build(BuildContext context) {
-    final sensorVM = Provider.of<SensorViewModel>(context);
-
-    return Consumer2<ControlViewModel, OptimalLimitViewModel>(
-      builder: (context, controlVM, optimalLimitVM, _) {
+    return Consumer3<ControlViewModel, OptimalLimitViewModel, SensorViewModel>(
+      builder: (context, controlVM, optimalLimitVM, sensorVM, _) {
         final pompa = controlVM.getControlById(1);
         final kipas = controlVM.getControlById(2);
         final lampu = controlVM.getControlById(3);
-        final limit = optimalLimitVM.limit;
 
-        if (MinSuhuTxt.text.isEmpty && limit != null) {
-          _setInitialLimitText(limit);
+        if (!_isInitialized && optimalLimitVM.limits.isNotEmpty && sensorVM.sensorData != null) {
+          final defaultLimit = optimalLimitVM.limits.firstWhereOrNull(
+            (limit) => limit.id == sensorVM.sensorData!.fkOptimalLimit,
+          );
+          if (defaultLimit != null) {
+            _setInitialLimitText(defaultLimit);
+            _isInitialized = true;
+          }
         }
 
         return Scaffold(
@@ -82,20 +87,13 @@ class _ControlContentState extends State<ControlContent> {
 
                   const SizedBox(height: 20),
                   Text("Pilih batas optimal:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  if (optimalVM.limits.isEmpty)
+                  if (optimalLimitVM.limits.isEmpty)
                     CircularProgressIndicator()
                   else
                     OptimalLimitDropdown(
-                      limits: optimalVM.limits,
+                      limits: optimalLimitVM.limits,
                       sensorVM: sensorVM,
-                  SizedBox(height: 20),
-                  Text("Pilih batas optimal:"),
-                    if (optimalLimitVM.limits.isEmpty)
-                      CircularProgressIndicator()
-                    else
-                      OptimalLimitDropdown(
-                        limits: optimalLimitVM.limits,
-                        sensorVM: sensorVM,
+                      onLimitChanged: (limit) =>_setInitialLimitText(limit)
                     ),
                   
                   const SizedBox(height: 16),
@@ -143,17 +141,40 @@ class _ControlContentState extends State<ControlContent> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () async {
-                      final minSuhu = double.tryParse(MinSuhuTxt.text.trim()) ?? 0.0;
-                      final maxSuhu = double.tryParse(MaxSuhuTxt.text.trim()) ?? 0.0;
-                      final minKelembapan = double.tryParse(MinKelembapanTxt.text.trim()) ?? 0.0;
-                      final maxKelembapan = double.tryParse(MaxKelembapanTxt.text.trim()) ?? 0.0;
+                      final minSuhu = double.tryParse(MinSuhuTxt.text.trim());
+                      final maxSuhu = double.tryParse(MaxSuhuTxt.text.trim());
+                      final minKelembapan = double.tryParse(MinKelembapanTxt.text.trim());
+                      final maxKelembapan = double.tryParse(MaxKelembapanTxt.text.trim());
 
-                      await optimalLimitVM.updateOptimalLimit(
-                        minTemperature: minSuhu,
-                        maxTemperature: maxSuhu,
-                        minHumidity: minKelembapan,
-                        maxHumidity: maxKelembapan,
-                      );
+                      final isSameSuhu = minSuhu == maxSuhu;
+                      final isSameKelembapan = minKelembapan == maxKelembapan;
+
+
+                      if (isSameSuhu || isSameKelembapan) {
+                        String message = "Minimal dan maksimal ";
+
+                        if (isSameSuhu && isSameKelembapan) {
+                          message += "suhu dan kelembapan tidak boleh sama.";
+                        } else if (isSameSuhu) {
+                          message += "suhu tidak boleh sama.";
+                        } else {
+                          message += "kelembapan tidak boleh sama.";
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                        return; 
+                      }else{
+                        await optimalLimitVM.updateOptimalLimit(
+                          minTemperature: minSuhu!,
+                          maxTemperature: maxSuhu!,
+                          minHumidity: minKelembapan!,
+                          maxHumidity: maxKelembapan!,
+                        );
+                      }
+
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Batas optimal berhasil diperbarui'),

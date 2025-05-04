@@ -18,6 +18,7 @@ class OptimalLimitService {
     return null;  
   }
 
+
   Future<List<OptimalLimit>> fetchAllOptimalLimits() async {
     final response = await _client
         .from('batas_optimal')
@@ -32,10 +33,10 @@ class OptimalLimitService {
     return [];
   }
 
-   Future<void> insertOptimalLimit({
-    required double minTemperature,
-    required double maxTemperature,
-    required double minHumidity,
+  Future<void> insertOptimalLimit({
+    required double minTemperature, 
+    required double maxTemperature, 
+    required double minHumidity, 
     required double maxHumidity,
   }) async {
     await _client

@@ -11,12 +11,12 @@ class OptimalLimitViewModel with ChangeNotifier {
   OptimalLimit? _selectedLimit;
   OptimalLimit? get limit => _limit;
   List<OptimalLimit> get limits => _limits;
-  OptimalLimit? get selectedLimit => _selectedLimit;
 
   OptimalLimitViewModel() {
     getOptimalLimit();
     getAllOptimalLimits();
   }
+
 
   Future<void> getOptimalLimit() async {
     _limit = await _optimalLimitervice.fetchOptimalLimit();
@@ -31,6 +31,7 @@ class OptimalLimitViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+
   void setSelectedLimit(OptimalLimit limit) {
     _selectedLimit = limit;
     notifyListeners();
@@ -40,12 +41,26 @@ class OptimalLimitViewModel with ChangeNotifier {
     return limits.firstWhereOrNull((opt) => opt.id == id);
   }
 
+  void syncSelectedLimitWithSensor(int? fkOptimalLimit) {
+    _selectedLimit = getById(fkOptimalLimit);
+    notifyListeners();
+  }
+
   Future<void> updateOptimalLimit({
     required double minTemperature,
     required double maxTemperature,
     required double minHumidity,
     required double maxHumidity,
   }) async {
+      final current = _selectedLimit;
+
+    if (current != null &&
+        current.minTemperature == minTemperature &&
+        current.maxTemperature == maxTemperature &&
+        current.minHumidity == minHumidity &&
+        current.maxHumidity == maxHumidity) {
+      return; // Tidak perlu update, data sama
+    }
     await _optimalLimitervice.insertOptimalLimit(
       minTemperature: minTemperature,
       maxTemperature: maxTemperature,
@@ -54,7 +69,7 @@ class OptimalLimitViewModel with ChangeNotifier {
     );
 
     await getOptimalLimit();
-  }
+  } 
 
   bool isTemperatureOptimal(double temperature, OptimalLimit limit) {
     // if (_limit == null) return true;

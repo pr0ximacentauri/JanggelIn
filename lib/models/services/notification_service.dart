@@ -1,27 +1,3 @@
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-// class NotificationService {
-//   static final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
-
-//   static Future<void> init() async {
-//     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-//     const initSettings = InitializationSettings(android: androidSettings);
-//     await _plugin.initialize(initSettings);
-//   }
-
-//   static Future<void> showNotification(String title, String body) async {
-//     const androidDetails = AndroidNotificationDetails(
-//       'sensor_channel',
-//       'Sensor Notification',
-//       importance: Importance.max,
-//       priority: Priority.high,
-//     );
-
-//     const details = NotificationDetails(android: androidDetails);
-//     await _plugin.show(0, title, body, details);
-//   }
-// }
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -29,8 +5,17 @@ class NotificationService {
 
   static Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    const WindowsInitializationSettings initializationSettingsWindows = WindowsInitializationSettings(
+      appName: 'Janggelin',
+      appUserModelId: 'com.example.sensor_notifier',
+      guid: '3a531e38-c945-462c-a2c1-19ffa77e1872',
+    );
 
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      windows: initializationSettingsWindows
+    );
+    
     await _notificationsPlugin.initialize(initializationSettings);
   }
 

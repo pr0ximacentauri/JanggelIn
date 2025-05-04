@@ -48,8 +48,8 @@ class SensorCard extends StatelessWidget {
 
     // nanti dihapus kalo udah :)
     // print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
-    // print('Optimal Temperature: ${optimalVM.limit?.minTemperature} - ${optimalVM.limit?.maxTemperature}');
-    // print('Optimal Humidity: ${optimalVM.limit?.minHumidity} - ${optimalVM.limit?.maxHumidity}');
+    // print('Optimal Temperature: ${optimalLimit.minTemperature} - ${optimalLimit.maxTemperature}');
+    // print('Optimal Humidity: ${optimalLimit.minHumidity} - ${optimalLimit.maxHumidity}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

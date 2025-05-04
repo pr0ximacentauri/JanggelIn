@@ -7,12 +7,15 @@ import 'package:collection/collection.dart';
 class OptimalLimitDropdown extends StatefulWidget {
   final List<OptimalLimit> limits;
   final SensorViewModel sensorVM;
+  final void Function(OptimalLimit) onLimitChanged;
 
   const OptimalLimitDropdown({
     Key? key,
     required this.limits,
     required this.sensorVM,
+    required this.onLimitChanged
   }) : super(key: key);
+
 
   @override
   _OptimalLimitDropdownState createState() => _OptimalLimitDropdownState();
@@ -51,6 +54,7 @@ class _OptimalLimitDropdownState extends State<OptimalLimitDropdown> {
             selectedLimit = newLimit;
           });
           await widget.sensorVM.setSensorOptimalLimit(newLimit.id);
+          widget.onLimitChanged(newLimit);
         }
       },
     );
