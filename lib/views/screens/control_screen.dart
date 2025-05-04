@@ -69,13 +69,25 @@ class _ControlContentState extends State<ControlContent> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const SizedBox(height: 5),
+                  Text("Aktuator", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
                   AktuatorStatus(control: pompa),
                   const SizedBox(height: 16),
                   AktuatorStatus(control: kipas),
                   const SizedBox(height: 16),
                   AktuatorStatus(control: lampu),
+                  const SizedBox(height: 16),
                   const Divider(thickness: 1, color: Colors.grey),
 
+                  const SizedBox(height: 20),
+                  Text("Pilih batas optimal:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  if (optimalVM.limits.isEmpty)
+                    CircularProgressIndicator()
+                  else
+                    OptimalLimitDropdown(
+                      limits: optimalVM.limits,
+                      sensorVM: sensorVM,
                   SizedBox(height: 20),
                   Text("Pilih batas optimal:"),
                     if (optimalLimitVM.limits.isEmpty)
@@ -85,17 +97,49 @@ class _ControlContentState extends State<ControlContent> {
                         limits: optimalLimitVM.limits,
                         sensorVM: sensorVM,
                     ),
-                  Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                  const SizedBox(height: 16),
-                  TextField(controller: MinSuhuTxt, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Minimal Batas Suhu")),
-                  const SizedBox(height: 12),
-                  TextField(controller: MaxSuhuTxt, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Maksimal Batas Suhu")),
-                  const SizedBox(height: 12),
-                  TextField(controller: MinKelembapanTxt, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Minimal Batas Kelembapan")),
-                  const SizedBox(height: 12),
-                  TextField(controller: MaxKelembapanTxt, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "Maksimal Batas Kelembapan")),
                   
+                  const SizedBox(height: 16),
+                  Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: MinSuhuTxt,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: "Minimal Batas Suhu"),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextField(
+                          controller: MaxSuhuTxt,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: "Maksimal Batas Suhu"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: MinKelembapanTxt,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: "Minimal Batas Kelembapan"),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextField(
+                          controller: MaxKelembapanTxt,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(labelText: "Maksimal Batas Kelembapan"),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () async {
@@ -110,13 +154,15 @@ class _ControlContentState extends State<ControlContent> {
                         minHumidity: minKelembapan,
                         maxHumidity: maxKelembapan,
                       );
-
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Batas optimal berhasil diperbarui')),
+                        const SnackBar(
+                          content: Text('Batas optimal berhasil diperbarui'),
+                          duration: Duration(seconds: 2),
+                        ),
                       );
                     },
-                    child: const Text("Simpan", style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF385A3C)),
+                    child: const Text("Simpan", style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
