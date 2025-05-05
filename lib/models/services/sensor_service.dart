@@ -58,12 +58,12 @@ class SensorService {
   }
 
 
-  // Future<void> uploadSensorData(SensorData data) async {
-  //   await _client.from('sensor_data').insert({
-  //     'temperature': data.temperature,
-  //     'humidity': data.humidity,
-  //     'updated_at': data.updatedAt.toIso8601String(),
-  //   });
-  // }
+  Future<void> uploadSensorData(SensorData data) async {
+    await _client.from('sensor_data').insert({
+      'temperature': data.temperature,
+      'humidity': data.humidity,
+      'updated_at': data.updatedAt.toIso8601String(),
+    });
+  }
 
 }

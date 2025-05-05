@@ -151,29 +151,45 @@ class _ControlContentState extends State<ControlContent> {
 
 
                       if (isSameSuhu || isSameKelembapan) {
-                        String message = "Minimal dan maksimal ";
+                        String message = "Batas minimal dan maksimal ";
 
                         if (isSameSuhu && isSameKelembapan) {
-                          message += "suhu dan kelembapan tidak boleh sama.";
+                          message += "suhu dan kelembapan tidak boleh sama";
                         } else if (isSameSuhu) {
-                          message += "suhu tidak boleh sama.";
+                          message += "suhu tidak boleh sama";
                         } else {
-                          message += "kelembapan tidak boleh sama.";
+                          message += "kelembapan tidak boleh sama";
                         }
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(message)),
                         );
                         return; 
-                      }else{
-                        await optimalLimitVM.updateOptimalLimit(
-                          minTemperature: minSuhu!,
-                          maxTemperature: maxSuhu!,
-                          minHumidity: minKelembapan!,
-                          maxHumidity: maxKelembapan!,
-                        );
                       }
+                     
+                      final isDuplicate = optimalLimitVM.limits.any((limit) =>
+                        limit.minTemperature == minSuhu &&
+                        limit.maxTemperature == maxSuhu &&
+                        limit.minHumidity == minKelembapan &&
+                        limit.maxHumidity == maxKelembapan
+                      );
 
+                      if (isDuplicate) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Data dengan batas tersebut sudah ada!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                        return;
+                      }
+                     
+                      await optimalLimitVM.updateOptimalLimit(
+                        minTemperature: minSuhu!,
+                        maxTemperature: maxSuhu!,
+                        minHumidity: minKelembapan!,
+                        maxHumidity: maxKelembapan!,
+                      );
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

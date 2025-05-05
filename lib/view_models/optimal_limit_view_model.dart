@@ -11,6 +11,7 @@ class OptimalLimitViewModel with ChangeNotifier {
   OptimalLimit? _selectedLimit;
   OptimalLimit? get limit => _limit;
   List<OptimalLimit> get limits => _limits;
+  OptimalLimit? get selectedLimit => _selectedLimit;
 
   OptimalLimitViewModel() {
     getOptimalLimit();

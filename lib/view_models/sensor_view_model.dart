@@ -9,26 +9,34 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
   final MqttService _mqttService = MqttService();
-  final OptimalLimitViewModel optimalLimitVM;
   
   SensorData? _sensorData;
-  double? _lastSavedTemperature;
-  double? _lastSavedHumidity;
   List<SensorData> _sensorHistory = [];
   SensorData? get sensorData => _sensorData;
   bool get hasSensorData => _sensorData != null;
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
   List<SensorData> get sensorHistory => _sensorHistory;
+    String get updatedAtFormatted {
+    final updatedAt = _sensorData?.updatedAt;
+    if (updatedAt == null) return 'Belum ada data sensor!';
+
+    return 'Terakhir diperbarui: '
+      '${updatedAt.day.toString().padLeft(2, '0')}-'
+      '${updatedAt.month.toString().padLeft(2, '0')}-'
+      '${updatedAt.year} '
+      '${updatedAt.hour.toString().padLeft(2, '0')}:'
+      '${updatedAt.minute.toString().padLeft(2, '0')}';
+  }
   
-  SensorViewModel(this.optimalLimitVM) {
+  SensorViewModel() {
     getSensorData();
     getSensorHistory();
     _sensorService.listenToSensorUpdates((newData) {
       _sensorData = newData;
       notifyListeners();
     });
-    // listenToMqttSensorData();
+    listenToMqttSensorData();
   }
 
 
@@ -58,7 +66,6 @@ class SensorViewModel with ChangeNotifier {
       updatedAt: DateTime.now(),
       fkOptimalLimit: optimalLimitId,
     );
-    optimalLimitVM.syncSelectedLimitWithSensor(optimalLimitId);
     notifyListeners();
   }
 
@@ -66,11 +73,13 @@ class SensorViewModel with ChangeNotifier {
   Future<void> actuatorControl(OptimalLimitViewModel optimalVM, ControlViewModel controlVM) async {
     if (_sensorData == null || optimalVM.limit == null) return;
 
-    final limit = optimalVM.limit!;
+    final limit = optimalVM.getById(sensorData?.fkOptimalLimit);
+    if (limit == null) {
+      print('Limit tidak ditemukan untuk ID: ${sensorData?.fkOptimalLimit}');
+      return;
+    }
     final temp = temperature;
     final humid = humidity;
-
-    if(_lastSavedTemperature == temp && _lastSavedHumidity == humid) return;
 
     final isTempOptimal = optimalVM.isTemperatureOptimal(temp, limit);
     final isHumidOptimal = optimalVM.isHumidityOptimal(humid, limit);
@@ -122,45 +131,33 @@ class SensorViewModel with ChangeNotifier {
     }
   }
 
-  // void listenToMqttSensorData() async {
-  //   await _mqttService.connect(onMessageReceived: (data) async {
-  //     _sensorData = SensorData(
-  //       id: 0,
-  //       temperature: (data['temperature'] ?? 0.0).toDouble(),
-  //       humidity: (data['humidity'] ?? 0.0).toDouble(),
-  //       updatedAt: DateTime.now(),
-  //     );
+  void listenToMqttSensorData() async {
+    await _mqttService.connect(onMessageReceived: (data) async {
+      _sensorData = SensorData(
+        id: 0,
+        temperature: (data['temperature'] ?? 0.0).toDouble(),
+        humidity: (data['humidity'] ?? 0.0).toDouble(),
+        createdAt: _sensorData!.createdAt,
+        updatedAt: DateTime.now(),
+      );
 
-  //     notifyListeners();
+      notifyListeners();
 
-  //     // Simpan ke database hanya jika perlu
-  //     await saveToDatabase();
-  //   });
-  // }
+      await saveToDatabase();
+    });
+  }
 
-  // double? _lastSavedTemp;
-  // double? _lastSavedHumidity;
+  double? _lastSavedTemp;
+  double? _lastSavedHumidity;
 
-  // Future<void> saveToDatabase() async {
-  //   if (_lastSavedTemp == null || _lastSavedHumidity == null ||
-  //       (temperature - _lastSavedTemp!).abs() > 0.5 ||
-  //       (humidity - _lastSavedHumidity!).abs() > 1.0) {
-  //     await _sensorService.uploadSensorData(_sensorData!);
+  Future<void> saveToDatabase() async {
+    if (_lastSavedTemp == null || _lastSavedHumidity == null ||
+        (temperature - _lastSavedTemp!).abs() > 0.5 ||
+        (humidity - _lastSavedHumidity!).abs() > 1.0) {
+      await _sensorService.uploadSensorData(_sensorData!);
 
-  //     _lastSavedTemp = temperature;
-  //     _lastSavedHumidity = humidity;
-  //   }
-  // }
-
-  String get updatedAtFormatted {
-  final updatedAt = _sensorData?.updatedAt;
-  if (updatedAt == null) return 'Belum ada data sensor!';
-
-    return 'Terakhir diperbarui: '
-        '${updatedAt.day.toString().padLeft(2, '0')}-'
-        '${updatedAt.month.toString().padLeft(2, '0')}-'
-        '${updatedAt.year} '
-        '${updatedAt.hour.toString().padLeft(2, '0')}:'
-        '${updatedAt.minute.toString().padLeft(2, '0')}';
+      _lastSavedTemp = temperature;
+      _lastSavedHumidity = humidity;
+    }
   }
 }
