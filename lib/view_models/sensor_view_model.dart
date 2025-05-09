@@ -62,7 +62,7 @@ class SensorViewModel with ChangeNotifier {
       id: _sensorData!.id,
       temperature: _sensorData!.temperature,
       humidity: _sensorData!.humidity,
-      createdAt: _sensorData!.createdAt,
+      createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       fkOptimalLimit: optimalLimitId,
     );
@@ -135,10 +135,11 @@ class SensorViewModel with ChangeNotifier {
     await _mqttService.connect(onMessageReceived: (data) async {
       _sensorData = SensorData(
         id: 0,
-        temperature: (data['temperature'] ?? 0.0).toDouble(),
-        humidity: (data['humidity'] ?? 0.0).toDouble(),
+        temperature: (data['suhu'] ?? 0.0).toDouble(),
+        humidity: (data['kelembapan'] ?? 0.0).toDouble(),
         createdAt: _sensorData!.createdAt,
         updatedAt: DateTime.now(),
+        fkOptimalLimit: _sensorData!.fkOptimalLimit
       );
 
       notifyListeners();

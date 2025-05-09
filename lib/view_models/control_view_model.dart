@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:c3_ppl_agro/models/control.dart';
 import 'package:c3_ppl_agro/models/services/control_service.dart';
+import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
 import 'package:flutter/foundation.dart';
 
 class ControlViewModel with ChangeNotifier {
   final ControlService _controlService = ControlService();
+  final MqttService _mqttService = MqttService();
   
   List<Control> _controls = [];
   List<Control> get controls => _controls;
@@ -17,8 +19,15 @@ class ControlViewModel with ChangeNotifier {
         _controls[index] = updatedControl;
         notifyListeners();
       }
+      _initMqtt();
     });
   } 
+
+  Future<void> _initMqtt() async {
+    await _mqttService.connect(onMessageReceived: (Map<String, dynamic> message){
+      print("MQTT Message Received: $message");
+    });
+  }
 
   Future<void> getAllControls() async {
     _controls = await _controlService.fetchAllControls();
@@ -41,6 +50,8 @@ class ControlViewModel with ChangeNotifier {
       }
       notifyListeners();
 
+      // await _mqttService.publish('kontrol/$id', newStatus);
+
       // auto off
       if (newStatus == 'ON') {
         Timer(Duration(seconds: 30), () async {
@@ -50,6 +61,8 @@ class ControlViewModel with ChangeNotifier {
             if (offIndex != -1) {
               _controls[offIndex] = autoOffControl;
               notifyListeners();
+
+              // await _mqttService.publish('kontrol/$id', 'OFF');
             } 
           }
         });

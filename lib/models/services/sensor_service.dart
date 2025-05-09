@@ -60,9 +60,11 @@ class SensorService {
 
   Future<void> uploadSensorData(SensorData data) async {
     await _client.from('sensor_data').insert({
-      'temperature': data.temperature,
-      'humidity': data.humidity,
+      'suhu': data.temperature,
+      'kelembapan': data.humidity,
+      'created_at': data.createdAt.toIso8601String(),
       'updated_at': data.updatedAt.toIso8601String(),
+      'fk_batas': data.fkOptimalLimit
     });
   }
 

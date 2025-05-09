@@ -21,7 +21,6 @@ void main() async{
     anonKey: AppConfig.supabaseAnonKey,
   );
   await NotificationService.init();
-  // print("MQTT Broker: ${AppConfig.mqttBroker}");
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
