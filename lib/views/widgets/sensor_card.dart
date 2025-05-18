@@ -17,39 +17,31 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sensorVM = Provider.of<SensorViewModel>(context);
+    final sensorVM  = Provider.of<SensorViewModel>(context);
     final optimalVM = Provider.of<OptimalLimitViewModel>(context);
     final controlVM = Provider.of<ControlViewModel>(context);
 
     final optimalLimit = optimalVM.getById(sensorVM.sensorData?.fkOptimalLimit);
 
-    if (optimalLimit == null) {
-      return Center(
-        child: Text(''),
-      );
-    } 
-
     String valueText = 'None';
-    if (value == 'temperature') {
-      valueText = sensorVM.temperature.toStringAsFixed(1) + ' °C';
-    } else if (value == 'humidity') {
-      valueText = sensorVM.humidity.toStringAsFixed(1) + ' %';
+    if (value == 'temperature' && sensorVM.hasSensorData) {
+      valueText = '${sensorVM.temperature.toStringAsFixed(1)} °C';
+    } else if (value == 'humidity' && sensorVM.hasSensorData) {
+      valueText = '${sensorVM.humidity.toStringAsFixed(1)} %';
     }
 
-    bool isOptimal = (value == 'temperature')
-      ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
-      : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
+    bool isOptimal = false;
+    if (sensorVM.hasSensorData && optimalLimit != null) {
+      isOptimal = (value == 'temperature')
+          ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
+          : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
+    }
 
-    String statusText = isOptimal ? 'Optimal' : 'Tidak Optimal';
+    final bool showNone = !sensorVM.hasSensorData || optimalLimit == null; 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sensorVM.actuatorControl(optimalVM, controlVM);
     });
-
-    // nanti dihapus kalo udah :)
-    // print('Sensor Data: ${sensorVM.temperature}, ${sensorVM.humidity}');
-    // print('Optimal Temperature: ${optimalLimit.minTemperature} - ${optimalLimit.maxTemperature}');
-    // print('Optimal Humidity: ${optimalLimit.minHumidity} - ${optimalLimit.maxHumidity}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,53 +68,33 @@ class SensorCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-               if(sensorVM.hasSensorData) ...[
-                Text(
-                  valueText,
+              Text(
+                showNone ? 'None' : valueText,                  
+                style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: showNone
+                      ? Colors.grey
+                      : (isOptimal ? Colors.green : Colors.red),   
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  showNone
+                      ? 'None'
+                      : (isOptimal ? 'Optimal' : 'Tidak Optimal'),
                   style: const TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isOptimal ? Colors.green : Colors.red,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    statusText,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ]else ...[
-                Text(
-                  "None",
-                  style: const TextStyle(
-                    fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    "None",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ]
+              )
             ],
           ),
         )

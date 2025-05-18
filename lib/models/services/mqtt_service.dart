@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:c3_ppl_agro/const.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -29,60 +29,62 @@ class MqttService {
     try {
       await client.connect();
     } catch (e) {
-      print('❌ MQTT connection failed: $e');
+      print('❌ Koneksi MQTT gagal: $e');
       disconnect();
       return;
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
       _isConnected = true;
-      print('✅ Connected to MQTT broker');
+      print('✅ Connect ke MQTT broker');
 
       client.subscribe('janggelin/sensor-dht22', MqttQos.atMostOnce);
 
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
         final recMess = c[0].payload as MqttPublishMessage;
         final payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        print('📥 Received MQTT payload: $payload');
 
         try {
           final data = jsonDecode(payload) as Map<String, dynamic>;
           onMessageReceived(data);
         } catch (e) {
-          print('⚠️ Error parsing MQTT message: $e');
+          print('⚠️ Error membaca pesan MQTT: $e');
         }
       });
     } else {
-      print('❌ Connection failed: ${client.connectionStatus}');
+      print('❌ Gagal subscribe: ${client.connectionStatus}');
       disconnect();
     }
   }
 
-  // Future<void> publish(String topic, String message) async {
-  //   if (!_isConnected) {
-  //     print('⚠️ MQTT not connected. Cannot publish.');
-  //     return;
-  //   }
+  Future<void> publishRelay({
+    required int relayId, 
+    required String state,
+  }) async {
+    if (!_isConnected) {
+      debugPrint('⚠️ MQTT belum tersambung, batal publish');
+      return;
+    }
+    final payload = jsonEncode({'relay':relayId,'state':state});
+    final builder = MqttClientPayloadBuilder()..addString(payload);
+    client.publishMessage(
+      'janggelin/relay-control',
+      MqttQos.atLeastOnce,
+      builder.payload!,
+      retain: true,
+    );
+    debugPrint('📤 [MQTT] relay:$relayId -> $state');
+  }
 
-  //   final builder = MqttClientPayloadBuilder();
-  //   builder.addString(message);
-
-  //   try {
-  //     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
-  //     print('📤 Published to $topic: $message');
-  //   } catch (e) {
-  //     print('❌ Failed to publish message: $e');
-  //   }
-  // }
 
   void disconnect() {
     client.disconnect();
     _isConnected = false;
-    print('🔌 Disconnected from MQTT broker');
+    print('🔌 Disconnect dari MQTT broker');
   }
 
   void onDisconnected() {
     _isConnected = false;
-    print('⚠️ Disconnected callback triggered');
+    print('⚠️ Disconnect callback terpicu');
   }
 }

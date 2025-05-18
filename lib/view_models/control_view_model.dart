@@ -38,37 +38,89 @@ class ControlViewModel with ChangeNotifier {
     return _controls.firstWhere((control) => control.id == id, orElse: () => Control(id: id, name: 'Unknown', status: 'OFF', updatedAt: DateTime.now()));
   }
 
+  // Future<void> setControlStatus(int id, String newStatus) async {
+  //   final index = _controls.indexWhere((control) => control.id == id);
+
+  //   // Cek apakah status sudah sesuai, jika ya maka tidak perlu update
+  //   if (index != -1 && _controls[index].status == newStatus) {
+  //     debugPrint("Kontrol ID $id sudah bernilai $newStatus, skip update.");
+  //     return;
+  //   }
+
+  //   final updatedControl = await _controlService.updateControlStatusById(id, newStatus);
+
+  //   if (updatedControl != null) {
+  //     if (index != -1) {
+  //       _controls[index] = updatedControl;
+  //     } else {
+  //       _controls.add(updatedControl);
+  //     }
+  //     notifyListeners();
+
+  //     // await _mqttService.publish('kontrol/$id', newStatus);
+
+  //     // Auto off setelah 30 detik hanya jika benar-benar baru dinyalakan
+  //     if (newStatus == 'ON') {
+  //       Timer(Duration(seconds: 30), () async {
+  //         final current = _controls.firstWhere((c) => c.id == id, orElse: () => updatedControl);
+  //         if (current.status == 'ON') {
+  //           final autoOffControl = await _controlService.updateControlStatusById(id, 'OFF');
+  //           if (autoOffControl != null) {
+  //             final offIndex = _controls.indexWhere((control) => control.id == id);
+  //             if (offIndex != -1) {
+  //               _controls[offIndex] = autoOffControl;
+  //               notifyListeners();
+
+  //               // await _mqttService.publish('kontrol/$id', 'OFF');
+  //             }
+  //           }
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     debugPrint("Gagal update status kontrol pada ID $id");
+  //   }
+  // }
+
+   Future<void> _publishToDevice(int id, String status) async {
+    await _mqttService.publishRelay(relayId: id, state: status);
+  }
+
   Future<void> setControlStatus(int id, String newStatus) async {
-    final updatedControl = await _controlService.updateControlStatusById(id, newStatus);
+    final index = _controls.indexWhere((c) => c.id == id);
+    if (index != -1 && _controls[index].status == newStatus) return;
 
-    if (updatedControl != null) {
-      final index = _controls.indexWhere((control) => control.id == id);
-      if (index != -1) {
-        _controls[index] = updatedControl;
-      } else {
-        _controls.add(updatedControl);
-      }
-      notifyListeners();
-
-      // await _mqttService.publish('kontrol/$id', newStatus);
-
-      // auto off
-      if (newStatus == 'ON') {
-        Timer(Duration(seconds: 30), () async {
-          final autoOffControl = await _controlService.updateControlStatusById(id,'OFF');
-          if (autoOffControl != null) {
-            final offIndex = _controls.indexWhere((control) => control.id == id);
-            if (offIndex != -1) {
-              _controls[offIndex] = autoOffControl;
-              notifyListeners();
-
-              // await _mqttService.publish('kontrol/$id', 'OFF');
-            } 
-          }
-        });
-      }
-    } else {
+    final updated = await _controlService.updateControlStatusById(id, newStatus);
+    if (updated == null) {
       debugPrint("Gagal update status kontrol pada ID $id");
+      return;
+    }
+
+    if (index != -1) {
+      _controls[index] = updated;
+    } else {
+      _controls.add(updated);
+    }
+    notifyListeners();
+
+    // === MQTT publish ===
+    await _publishToDevice(id, newStatus);
+
+    if (newStatus == 'ON') {
+      Timer(const Duration(seconds: 30), () async {
+        final current = _controls.firstWhere((c) => c.id == id, orElse: () => updated);
+        if (current.status == 'ON') {
+          final off = await _controlService.updateControlStatusById(id, 'OFF');
+          if (off != null) {
+            final i = _controls.indexWhere((c) => c.id == id);
+            if (i != -1) {
+              _controls[i] = off;
+              notifyListeners();
+              await _publishToDevice(id, 'OFF'); 
+            }
+          }
+        }
+      });
     }
   }
 }
