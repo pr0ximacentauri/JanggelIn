@@ -84,7 +84,7 @@ class SensorViewModel with ChangeNotifier {
     final isTempOptimal = optimalVM.isTemperatureOptimal(temp, limit);
     final isHumidOptimal = optimalVM.isHumidityOptimal(humid, limit);
 
-    // lampu pijar(3), kipas(2), pompa air(1)
+    // pompa air(1), kipas(2), lampu pijar(3)
     if (isTempOptimal && isHumidOptimal) {
       await controlVM.setControlStatus(1, 'OFF'); 
       await controlVM.setControlStatus(2, 'OFF');
@@ -135,15 +135,14 @@ class SensorViewModel with ChangeNotifier {
     await _mqttService.connect(onMessageReceived: (data) async {
       _sensorData = SensorData(
         id: 0,
-        temperature: (data['suhu'] ?? 0.0).toDouble(),
-        humidity: (data['kelembapan'] ?? 0.0).toDouble(),
-        createdAt: _sensorData!.createdAt,
-        updatedAt: DateTime.now(),
-        fkOptimalLimit: _sensorData!.fkOptimalLimit
+        temperature: (data['temperature'] ?? 0.0).toDouble(),
+        humidity:    (data['humidity']    ?? 0.0).toDouble(),
+        createdAt:   _sensorData?.createdAt ?? DateTime.now(),
+        updatedAt:   DateTime.now(),
+        fkOptimalLimit: _sensorData?.fkOptimalLimit,
       );
 
       notifyListeners();
-
       await saveToDatabase();
     });
   }

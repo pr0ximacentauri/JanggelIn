@@ -5,11 +5,15 @@ import 'dart:convert';
 import 'dart:io';
 
 class MqttService {
+  static final MqttService _instance = MqttService._internal();
+  factory MqttService() => _instance;
+  MqttService._internal();
+  
   late MqttServerClient client;
   bool _isConnected = false;
 
   Future<void> connect({
-    required Function(Map<String, dynamic>) onMessageReceived,
+    required void Function(Map<String, dynamic>) onMessageReceived,
   }) async {
     client = MqttServerClient('test.mosquitto.org', '');
     client.port = 1883;
@@ -34,28 +38,37 @@ class MqttService {
       return;
     }
 
-    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
       _isConnected = true;
-      print('✅ Connect ke MQTT broker');
+      print('✅ Terhubung ke MQTT broker');
 
       client.subscribe('janggelin/sensor-dht22', MqttQos.atMostOnce);
 
-      client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-        final recMess = c[0].payload as MqttPublishMessage;
-        final payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      client.updates!.listen((events) {
+        final recMess = events.first.payload as MqttPublishMessage;
+        final payload =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
         try {
-          final data = jsonDecode(payload) as Map<String, dynamic>;
-          onMessageReceived(data);
+          final raw = jsonDecode(payload) as Map<String, dynamic>;
+
+          final double suhu = (raw['suhu'] as num?)?.toDouble() ?? 0;
+          final double kelembaban = (raw['kelembaban'] as num?)?.toDouble() ?? 0;
+
+          onMessageReceived({
+            'temperature': suhu,
+            'humidity': kelembaban,
+          });
         } catch (e) {
-          print('⚠️ Error membaca pesan MQTT: $e');
+          print('⚠️ Gagal parse MQTT payload: $e  ->  $payload');
         }
       });
     } else {
-      print('❌ Gagal subscribe: ${client.connectionStatus}');
+      print('❌ Status koneksi MQTT: ${client.connectionStatus}');
       disconnect();
     }
   }
+
 
   Future<void> publishRelay({
     required int relayId, 

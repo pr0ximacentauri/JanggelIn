@@ -103,7 +103,6 @@ class ControlViewModel with ChangeNotifier {
     }
     notifyListeners();
 
-    // === MQTT publish ===
     await _publishToDevice(id, newStatus);
 
     if (newStatus == 'ON') {

@@ -60,7 +60,7 @@ class OptimalLimitViewModel with ChangeNotifier {
         current.maxTemperature == maxTemperature &&
         current.minHumidity == minHumidity &&
         current.maxHumidity == maxHumidity) {
-      return; // Tidak perlu update, data sama
+      return;
     }
     await _optimalLimitervice.insertOptimalLimit(
       minTemperature: minTemperature,
