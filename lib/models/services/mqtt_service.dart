@@ -9,42 +9,43 @@ class MqttService {
   factory MqttService() => _instance;
   MqttService._internal();
   
-  late MqttServerClient client;
+  late MqttServerClient _client;
   bool _isConnected = false;
+  bool get isConnected => _isConnected;
 
   Future<void> connect({
     required void Function(Map<String, dynamic>) onMessageReceived,
   }) async {
-    client = MqttServerClient('test.mosquitto.org', '');
-    client.port = 1883;
-    client.secure = false;
+    _client = MqttServerClient('test.mosquitto.org', '');
+    _client.port = 1883;
+    _client.secure = false;
 
-    client.securityContext = SecurityContext.defaultContext;
-    client.keepAlivePeriod = 30;
-    client.onDisconnected = onDisconnected;
-    client.logging(on: false);
+    _client.securityContext = SecurityContext.defaultContext;
+    _client.keepAlivePeriod = 30;
+    _client.onDisconnected = onDisconnected;
+    _client.logging(on: false);
 
     final connMess = MqttConnectMessage()
         .withClientIdentifier('flutter_client_${DateTime.now().millisecondsSinceEpoch}')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    client.connectionMessage = connMess;
+    _client.connectionMessage = connMess;
 
     try {
-      await client.connect();
+      await _client.connect();
     } catch (e) {
       print('❌ Koneksi MQTT gagal: $e');
       disconnect();
       return;
     }
 
-    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+    if (_client.connectionStatus?.state == MqttConnectionState.connected) {
       _isConnected = true;
       print('✅ Terhubung ke MQTT broker');
 
-      client.subscribe('janggelin/sensor-dht22', MqttQos.atMostOnce);
+      _client.subscribe('janggelin/sensor-dht22', MqttQos.atMostOnce);
 
-      client.updates!.listen((events) {
+      _client.updates!.listen((events) {
         final recMess = events.first.payload as MqttPublishMessage;
         final payload =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
@@ -64,7 +65,7 @@ class MqttService {
         }
       });
     } else {
-      print('❌ Status koneksi MQTT: ${client.connectionStatus}');
+      print('❌ Status koneksi MQTT: ${_client.connectionStatus}');
       disconnect();
     }
   }
@@ -80,7 +81,7 @@ class MqttService {
     }
     final payload = jsonEncode({'relay':relayId,'state':state});
     final builder = MqttClientPayloadBuilder()..addString(payload);
-    client.publishMessage(
+    _client.publishMessage(
       'janggelin/relay-control',
       MqttQos.atLeastOnce,
       builder.payload!,
@@ -91,7 +92,7 @@ class MqttService {
 
 
   void disconnect() {
-    client.disconnect();
+    _client.disconnect();
     _isConnected = false;
     print('🔌 Disconnect dari MQTT broker');
   }

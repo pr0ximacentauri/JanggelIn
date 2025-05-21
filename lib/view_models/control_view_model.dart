@@ -25,8 +25,8 @@ class ControlViewModel with ChangeNotifier {
 
   Future<void> _initMqtt() async {
     await _mqttService.connect(onMessageReceived: (Map<String, dynamic> message){
-      print("MQTT Message Received: $message");
-    });
+      print("MQTT Diterima: $message");
+    }); 
   }
 
   Future<void> getAllControls() async {
@@ -83,8 +83,10 @@ class ControlViewModel with ChangeNotifier {
   // }
 
    Future<void> _publishToDevice(int id, String status) async {
+    if(!_mqttService.isConnected) return; 
     await _mqttService.publishRelay(relayId: id, state: status);
   }
+
 
   Future<void> setControlStatus(int id, String newStatus) async {
     final index = _controls.indexWhere((c) => c.id == id);

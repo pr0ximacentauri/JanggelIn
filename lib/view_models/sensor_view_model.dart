@@ -84,7 +84,7 @@ class SensorViewModel with ChangeNotifier {
     final isTempOptimal = optimalVM.isTemperatureOptimal(temp, limit);
     final isHumidOptimal = optimalVM.isHumidityOptimal(humid, limit);
 
-    // pompa air(1), kipas(2), lampu pijar(3)
+    // pompa air(1), kipas(2), humidifier(3)
     if (isTempOptimal && isHumidOptimal) {
       await controlVM.setControlStatus(1, 'OFF'); 
       await controlVM.setControlStatus(2, 'OFF');
@@ -92,21 +92,21 @@ class SensorViewModel with ChangeNotifier {
       return;
     }
     
-    if (!isTempOptimal && temp <= limit.minTemperature) {
-      await controlVM.setControlStatus(3, 'ON');
-      await NotificationService.showNotification(
-        title: 'Suhu Terlalu Rendah',
-        body: 'Menyalakan lampu pijar karena suhu $temp°C',
-      );
-    } else {
-      await controlVM.setControlStatus(3, 'OFF');
-    }
+    // if (!isTempOptimal && temp <= limit.minTemperature) {
+    //   await controlVM.setControlStatus(3, 'ON');
+    //   await NotificationService.showNotification(
+    //     title: 'Suhu Terlalu Rendah',
+    //     body: 'Menyalakan lampu pijar karena suhu $temp°C',
+    //   );
+    // } else {
+    //   await controlVM.setControlStatus(3, 'OFF');
+    // }
 
     if (!isTempOptimal && temp >= limit.maxTemperature) {
-      await controlVM.setControlStatus(2, 'ON');
+      await controlVM.setControlStatus(3, 'ON');
       await NotificationService.showNotification(
         title: 'Suhu Terlalu Tinggi',
-        body: 'Menyalakan kipas karena suhu $temp°C',
+        body: 'Menyalakan mist maker karena suhu $temp°C',
       );
     } else if (isTempOptimal && humid <= limit.maxHumidity) {
       await controlVM.setControlStatus(2, 'OFF');
