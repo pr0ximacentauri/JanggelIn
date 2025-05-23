@@ -10,6 +10,7 @@ import 'package:c3_ppl_agro/views/screens/auth/reset_password.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:uni_links/uni_links.dart';
 import 'views/screens/home_screen.dart'; 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,33 @@ void main() async{
   );
 }
 
-class JanggelinApp extends StatelessWidget {
+class JanggelinApp extends StatefulWidget {
   const JanggelinApp({super.key});
+
+  @override
+  State<JanggelinApp> createState() => _JanggelinContent();
+}
+
+class _JanggelinContent extends State<JanggelinApp> {
+
+  @override
+  void initState() {
+    super.initState();
+    handleDeepLink();
+  }
+
+  void handleDeepLink() async {
+    final link = await getInitialLink(); // dari package uni_links
+    if (link != null && link.contains("reset-password")) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ResetPassword(fromDeepLink: true),
+        ),
+      );
+    }
+  }
+
 
   // This widget is the root of your application.
   @override

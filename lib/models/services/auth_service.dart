@@ -12,8 +12,11 @@ class AuthService {
   }
 
   Future<void> forgotPassword(String email) async {
-  return _client.auth.resetPasswordForEmail(email);
-}
+  return _client.auth.resetPasswordForEmail(
+      email,
+      redirectTo: 'janggelin://reset-password',
+    );
+  }
 
 
   Future<void> logout() async {

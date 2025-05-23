@@ -1,11 +1,11 @@
-// reset_password.dart
-
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({super.key});
+  final bool fromDeepLink;
+
+  const ResetPassword({super.key, this.fromDeepLink = false});
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -16,6 +16,16 @@ class _ResetPasswordState extends State<ResetPassword> {
   final newPasswordTxt = TextEditingController();
   final confirmPasswordTxt = TextEditingController();
   bool emailVerified = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Jika dari deep link, langsung skip email
+    if (widget.fromDeepLink) {
+      emailVerified = true;
+    }
+  }
 
   @override
   void dispose() {
@@ -47,7 +57,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                 controller: emailTxt,
                 decoration: const InputDecoration(
                   labelText: "Email",
-                  // labelStyle: TextStyle(color: const Color(0xFF385A3C)),
                   prefixIcon: Icon(Icons.email),
                 ),
               ),
@@ -58,19 +67,24 @@ class _ResetPasswordState extends State<ResetPassword> {
                     setState(() => emailVerified = true);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Email tidak cocok dengan akun saat ini.")),
+                      const SnackBar(
+                          content: Text("Email tidak cocok dengan akun saat ini.")),
                     );
                   }
                 },
                 child: const Text("Verifikasi Email"),
               ),
             ] else ...[
+              const Text(
+                "Masukkan Password Baru",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: newPasswordTxt,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: "Password Baru",
-                  // labelStyle: TextStyle(color: const Color(0xFF385A3C)),
                   prefixIcon: Icon(Icons.lock),
                 ),
               ),
@@ -80,7 +94,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: "Konfirmasi Password",
-                  // labelStyle: TextStyle(color: const Color(0xFF385A3C)),
                   prefixIcon: Icon(Icons.lock_outline),
                 ),
               ),
@@ -116,10 +129,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              Navigator.pushReplacementNamed(context, '/page');
+                              Navigator.pushReplacementNamed(context, '/login');
                             },
                             child: const Text("OK"),
-
                           ),
                         ],
                       ),
