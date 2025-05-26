@@ -1,9 +1,7 @@
-import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-
 
 class SensorCard extends StatelessWidget {
   final String title;
@@ -19,7 +17,6 @@ class SensorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final sensorVM  = Provider.of<SensorViewModel>(context);
     final optimalVM = Provider.of<OptimalLimitViewModel>(context);
-    final controlVM = Provider.of<ControlViewModel>(context);
 
     final optimalLimit = optimalVM.getById(sensorVM.sensorData?.fkOptimalLimit);
 
@@ -38,10 +35,6 @@ class SensorCard extends StatelessWidget {
     }
 
     final bool showNone = !sensorVM.hasSensorData || optimalLimit == null; 
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      sensorVM.actuatorControl(optimalVM, controlVM);
-    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +62,7 @@ class SensorCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                showNone ? 'None' : valueText,                  
+                showNone ? 'None' : valueText,
                 style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
@@ -77,12 +70,11 @@ class SensorCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: showNone
                       ? Colors.grey
-                      : (isOptimal ? Colors.green : Colors.red),   
+                      : (isOptimal ? Colors.green : Colors.red),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

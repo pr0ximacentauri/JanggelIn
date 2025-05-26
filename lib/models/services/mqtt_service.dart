@@ -71,15 +71,22 @@ class MqttService {
   }
 
 
-  Future<void> publishRelay({
-    required int relayId, 
-    required String state,
+  Future<void> publishOptimalLimit({
+    required double minTemperature,
+    required double maxTemperature,
+    required double minHumidity,
+    required double maxHumidity
   }) async {
     if (!_isConnected) {
       debugPrint('⚠️ MQTT belum tersambung, batal publish');
       return;
     }
-    final payload = jsonEncode({'relay':relayId,'state':state});
+    final payload = jsonEncode({
+      'minTemperature': minTemperature,
+      'maxTemperature': maxTemperature,
+      'minHumidity': minHumidity,
+      'maxHumidity': maxHumidity,
+    });
     final builder = MqttClientPayloadBuilder()..addString(payload);
     _client.publishMessage(
       'janggelin/relay-control',
@@ -87,7 +94,7 @@ class MqttService {
       builder.payload!,
       retain: true,
     );
-    debugPrint('📤 [MQTT] relay:$relayId -> $state');
+    debugPrint('📤 [MQTT] Batas optimal dikirim: \n$payload');
   }
 
 

@@ -93,6 +93,7 @@ class _ControlContentState extends State<ControlContent> {
                     OptimalLimitDropdown(
                       limits: optimalLimitVM.limits,
                       sensorVM: sensorVM,
+                      optimalLimitVM: optimalLimitVM,
                       onLimitChanged: (limit) =>_setInitialLimitText(limit)
                     ),
                   

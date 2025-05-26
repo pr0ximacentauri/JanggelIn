@@ -1,11 +1,13 @@
 import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
+import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';  
 
 class OptimalLimitViewModel with ChangeNotifier {
   final OptimalLimitService _optimalLimitervice = OptimalLimitService();
-  
+  final MqttService _mqttService = MqttService();
+
   OptimalLimit? _limit;
   List<OptimalLimit> _limits = [];
   OptimalLimit? _selectedLimit;
@@ -18,6 +20,27 @@ class OptimalLimitViewModel with ChangeNotifier {
     getAllOptimalLimits();
   }
 
+  Future<void> publishSelectedLimit() async {
+  if (!_selectedLimitIsValid()) {
+    debugPrint('Tidak ada batas optimal yang valid untuk dipublish');
+    return;
+  }
+
+  if (_mqttService.isConnected) {
+    await _mqttService.publishOptimalLimit(
+      minTemperature: _selectedLimit!.minTemperature,
+      maxTemperature: _selectedLimit!.maxTemperature,
+      minHumidity: _selectedLimit!.minHumidity,
+      maxHumidity: _selectedLimit!.maxHumidity,
+    );
+  } else {
+    debugPrint('⚠️ MQTT belum terhubung');
+  }
+}
+
+bool _selectedLimitIsValid() {
+  return _selectedLimit != null;
+}
 
   Future<void> getOptimalLimit() async {
     _limit = await _optimalLimitervice.fetchOptimalLimit();
