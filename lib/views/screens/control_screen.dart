@@ -81,8 +81,6 @@ class _ControlContentState extends State<ControlContent> {
                   const SizedBox(height: 16),
                   AktuatorStatus(control: kipas),
                   const SizedBox(height: 16),
-                  AktuatorStatus(control: lampu),
-                  const SizedBox(height: 16),
                   const Divider(thickness: 1, color: Colors.grey),
 
                   const SizedBox(height: 20),

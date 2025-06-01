@@ -81,7 +81,6 @@ class SensorViewModel with ChangeNotifier {
     }
   }
 
-  /// Cek kondisi optimal untuk notifikasi (tanpa kendali perangkat)
   void checkOptimalStatus(OptimalLimitViewModel optimalVM) {
     if (_sensorData == null) return;
 

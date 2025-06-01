@@ -18,7 +18,7 @@ class SensorCard extends StatelessWidget {
     final sensorVM  = Provider.of<SensorViewModel>(context);
     final optimalVM = Provider.of<OptimalLimitViewModel>(context);
 
-    final optimalLimit = optimalVM.getById(sensorVM.sensorData?.fkOptimalLimit);
+    final optimalLimit = optimalVM.selectedLimit;
 
     String valueText = 'None';
     if (value == 'temperature' && sensorVM.hasSensorData) {

@@ -89,7 +89,7 @@ class MqttService {
     });
     final builder = MqttClientPayloadBuilder()..addString(payload);
     _client.publishMessage(
-      'janggelin/relay-control',
+      'janggelin/optimal-limit',
       MqttQos.atLeastOnce,
       builder.payload!,
       retain: true,

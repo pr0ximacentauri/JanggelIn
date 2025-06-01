@@ -30,9 +30,8 @@ class ControlViewModel with ChangeNotifier {
       (control) => control.id == id,
       orElse: () => Control(
         id: id,
-        name: 'Unknown',
+        // name: 'Unknown',
         status: 'OFF',
-        updatedAt: DateTime.now(),
       ),
     );
   }

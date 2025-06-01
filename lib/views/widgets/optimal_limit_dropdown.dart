@@ -53,11 +53,15 @@ class _OptimalLimitDropdownState extends State<OptimalLimitDropdown> {
       }).toList(),
       onChanged: (OptimalLimit? newLimit) async {
         if (newLimit != null) {
+          setState(() {
+            selectedLimit = newLimit;
+          });
+
           widget.optimalLimitVM.setSelectedLimit(newLimit);
           await widget.optimalLimitVM.publishSelectedLimit();
           widget.onLimitChanged(newLimit);
         }
-      },
+      }
 
     );
   }
