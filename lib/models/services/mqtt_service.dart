@@ -2,21 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:convert';
+import '../../const.dart';
 import 'dart:io';
 
 class MqttService {
   static final MqttService _instance = MqttService._internal();
   factory MqttService() => _instance;
   MqttService._internal();
-  
+
   late MqttServerClient _client;
   bool _isConnected = false;
   bool get isConnected => _isConnected;
 
   Future<void> connect({
-    required void Function(Map<String, dynamic>) onMessageReceived,
+    required void Function(Map<String, dynamic>) onSensorMessage,
+    required void Function(Map<String, dynamic>) onControlStatusChanged,
   }) async {
-    _client = MqttServerClient('test.mosquitto.org', '');
+    _client = MqttServerClient('${AppConfig.mqttBroker}', '');
     _client.port = 1883;
     _client.secure = false;
 
@@ -43,25 +45,34 @@ class MqttService {
       _isConnected = true;
       print('✅ Terhubung ke MQTT broker');
 
-      _client.subscribe('janggelin/sensor-dht22', MqttQos.atMostOnce);
+      _client.subscribe('${AppConfig.mqttTopicSub}', MqttQos.atMostOnce);
+      _client.subscribe('${AppConfig.mqttTopicSub2}', MqttQos.atLeastOnce);
 
       _client.updates!.listen((events) {
+        final topic = events.first.topic;
         final recMess = events.first.payload as MqttPublishMessage;
-        final payload =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        final payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
         try {
-          final raw = jsonDecode(payload) as Map<String, dynamic>;
+          final data = jsonDecode(payload) as Map<String, dynamic>;
 
-          final double suhu = (raw['suhu'] as num?)?.toDouble() ?? 0;
-          final double kelembaban = (raw['kelembaban'] as num?)?.toDouble() ?? 0;
-
-          onMessageReceived({
-            'temperature': suhu,
-            'humidity': kelembaban,
-          });
+          if (topic == '${AppConfig.mqttTopicSub}') {
+            final double suhu = (data['suhu'] as num?)?.toDouble() ?? 0;
+            final double kelembaban = (data['kelembaban'] as num?)?.toDouble() ?? 0;
+            onSensorMessage({
+              'temperature': suhu,
+              'humidity': kelembaban,
+            });
+          } else if (topic == '${AppConfig.mqttTopicSub}') {
+            final int id = data['id_kontrol'] as int;
+            final String status = data['status'] as String;
+            onControlStatusChanged({
+              'id_kontrol': id,
+              'status': status,
+            });
+          }
         } catch (e) {
-          print('⚠️ Gagal parse MQTT payload: $e  ->  $payload');
+          print('⚠️ Gagal parse MQTT payload dari [$topic]: $e → $payload');
         }
       });
     } else {
@@ -69,7 +80,6 @@ class MqttService {
       disconnect();
     }
   }
-
 
   Future<void> publishOptimalLimit({
     required double minTemperature,
@@ -89,14 +99,13 @@ class MqttService {
     });
     final builder = MqttClientPayloadBuilder()..addString(payload);
     _client.publishMessage(
-      'janggelin/optimal-limit',
+      '${AppConfig.mqttTopicPub}',
       MqttQos.atLeastOnce,
       builder.payload!,
       retain: true,
     );
     debugPrint('📤 [MQTT] Batas optimal dikirim: \n$payload');
   }
-
 
   void disconnect() {
     _client.disconnect();

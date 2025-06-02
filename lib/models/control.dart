@@ -21,4 +21,18 @@ class Control {
       perangkat: Device.fromJson(json['perangkat']),
     );
   }
+
+    Control copyWith({
+    int? id,
+    String? status,
+    int? perangkatId,
+    Device? perangkat,
+  }) {
+    return Control(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      perangkatId: perangkatId ?? this.perangkatId,
+      perangkat: perangkat ?? this.perangkat,
+    );
+  }
 }

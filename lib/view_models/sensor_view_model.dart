@@ -51,21 +51,23 @@ class SensorViewModel with ChangeNotifier {
   }
 
   void _listenToMqttSensorData() async {
-    await _mqttService.connect(onMessageReceived: (data) async {
-      final newSensorData = SensorData(
-        id: 0,
-        temperature: (data['temperature'] ?? 0.0).toDouble(),
-        humidity: (data['humidity'] ?? 0.0).toDouble(),
-        createdAt: _sensorData?.createdAt ?? DateTime.now(),
-        updatedAt: DateTime.now(),
-        fkOptimalLimit: _sensorData?.fkOptimalLimit,
-      );
+    await _mqttService.connect(onSensorMessage: (data) async {
+        final newSensorData = SensorData(
+          id: 0,
+          temperature: (data['temperature'] ?? 0.0).toDouble(),
+          humidity: (data['humidity'] ?? 0.0).toDouble(),
+          createdAt: _sensorData?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+          fkOptimalLimit: _sensorData?.fkOptimalLimit,
+        );
 
-      _sensorData = newSensorData;
-      notifyListeners();
+        _sensorData = newSensorData;
+        notifyListeners();
 
-      await _saveToDatabase();
-    });
+        await _saveToDatabase();
+      },
+      onControlStatusChanged: (_) {},
+    );
   }
 
   double? _lastSavedTemp;
