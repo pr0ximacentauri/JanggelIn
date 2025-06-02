@@ -4,7 +4,6 @@ import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
@@ -54,12 +53,10 @@ class _ControlContentState extends State<ControlContent> {
       builder: (context, controlVM, optimalLimitVM, sensorVM, _) {
         final pompa = controlVM.getControlById(1);
         final kipas = controlVM.getControlById(2);
-        final lampu = controlVM.getControlById(3);
+        // final lampu = controlVM.getControlById(3);
 
         if (!_isInitialized && optimalLimitVM.limits.isNotEmpty && sensorVM.sensorData != null) {
-          final defaultLimit = optimalLimitVM.limits.firstWhereOrNull(
-            (limit) => limit.id == sensorVM.sensorData!.fkOptimalLimit,
-          );
+          final defaultLimit = optimalLimitVM.selectedLimit;
           if (defaultLimit != null) {
             _setInitialLimitText(defaultLimit);
             _isInitialized = true;
@@ -94,7 +91,58 @@ class _ControlContentState extends State<ControlContent> {
                       optimalLimitVM: optimalLimitVM,
                       onLimitChanged: (limit) =>_setInitialLimitText(limit)
                     ),
-                  
+
+                  const SizedBox(height: 8),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      final selected = optimalLimitVM.selectedLimit;
+                      if (selected == null) return;
+
+                      // Cek apakah sedang digunakan
+                      if (selected == optimalLimitVM.selectedLimit) {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Konfirmasi Hapus"),
+                            content: const Text("Batas optimal ini sedang dipilih. Apakah yakin ingin menghapus?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text("Batal"),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirm == true) {
+                          await optimalLimitVM.deleteOptimalLimit(selected.id);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Batas optimal berhasil dihapus")),
+                          );
+                          setState(() {
+                            // Kosongkan isian
+                            MinSuhuTxt.clear();
+                            MaxSuhuTxt.clear();
+                            MinKelembapanTxt.clear();
+                            MaxKelembapanTxt.clear();
+                          });
+                        }
+                      } else {
+                        await optimalLimitVM.deleteOptimalLimit(selected.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Batas optimal berhasil dihapus")),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.delete),
+                    label: const Text("Hapus Batas Ini"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  ),
+
                   const SizedBox(height: 16),
                   Text("Pengaturan Batasan", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),

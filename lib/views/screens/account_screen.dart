@@ -82,16 +82,16 @@ class AccountContent extends StatelessWidget {
                     title: 'Ubah Password',
                     onTap: () => Navigator.pushNamed(context, '/reset-password'),
                   ),
-                  _buildListTile(
-                    icon: Icons.contact_support_outlined,
-                    title: 'Bantuan',
-                    onTap: () {},
-                  ),
-                  _buildListTile(
-                    icon: Icons.info_outline,
-                    title: 'Tentang Aplikasi',
-                    onTap: () {},
-                  ),
+                  // _buildListTile(
+                  //   icon: Icons.contact_support_outlined,
+                  //   title: 'Bantuan',
+                  //   onTap: () {},
+                  // ),
+                  // _buildListTile(
+                  //   icon: Icons.info_outline,
+                  //   title: 'Tentang Aplikasi',
+                  //   onTap: () {},
+                  // ),
                   const Divider(height: 1),
                   _buildListTile(
                     icon: Icons.logout,

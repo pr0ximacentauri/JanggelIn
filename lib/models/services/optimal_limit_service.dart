@@ -53,4 +53,12 @@ class OptimalLimitService {
       'updated_at': DateTime.now().toIso8601String(),
     });
   }
+
+  Future<void> deleteOptimalLimit(int id) async {
+    await _client
+        .from('batas_optimal')
+        .delete()
+        .eq('id_batas', id);
+  }
+
 }

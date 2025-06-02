@@ -76,7 +76,7 @@ bool _selectedLimitIsValid() {
     required double minHumidity,
     required double maxHumidity,
   }) async {
-      final current = _selectedLimit;
+    final current = _selectedLimit;
 
     if (current != null &&
         current.minTemperature == minTemperature &&
@@ -93,7 +93,20 @@ bool _selectedLimitIsValid() {
     );
 
     await getOptimalLimit();
+    await getAllOptimalLimits(); 
   } 
+
+  Future<void> deleteOptimalLimit(int id) async {
+    await _optimalLimitervice.deleteOptimalLimit(id);
+
+    limits.removeWhere((limit) => limit.id == id);
+    if (selectedLimit?.id == id) {
+      _selectedLimit = null;
+    }
+
+    notifyListeners();
+  }
+
 
   bool isTemperatureOptimal(double temperature, OptimalLimit limit) {
     // if (_limit == null) return true;
