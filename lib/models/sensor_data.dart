@@ -5,7 +5,6 @@ class SensorData {
   double humidity;
   DateTime createdAt;
   DateTime updatedAt;
-  int? fkOptimalLimit;
 
   SensorData({
     required this.id,
@@ -13,7 +12,6 @@ class SensorData {
     this.humidity = 0.0,
     required this.createdAt,
     required this.updatedAt,
-    this.fkOptimalLimit,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,7 +21,6 @@ class SensorData {
       'kelembapan': humidity,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
-      'fk_batas': fkOptimalLimit,
     };
   }
 
@@ -34,7 +31,6 @@ class SensorData {
       humidity: (json['kelembapan'] as num).toDouble(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      fkOptimalLimit: json['fk_batas'],
     );
   }
 }

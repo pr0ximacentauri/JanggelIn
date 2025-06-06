@@ -1,5 +1,5 @@
+import 'package:c3_ppl_agro/models/sensor_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../sensor_data.dart';
 
 class SensorService {
   final SupabaseClient _client = Supabase.instance.client;
@@ -41,30 +41,12 @@ class SensorService {
       ).subscribe();
   }
 
-  Future<void> updateSensorOptimalLimit({
-    required int sensorId,
-    required int optimalLimitId,
-  }) async {
-    final response = await _client.from('sensor_data').update({
-      'fk_batas': optimalLimitId,
-      'updated_at': DateTime.now().toIso8601String(),
-    })
-    .eq('id_sensor', sensorId)
-    .select();
-
-    if (response == null || response.isEmpty) {
-      throw Exception('Gagal memperbarui fk_batas sensor.');
-    }
-  }
-
-
   Future<void> uploadSensorData(SensorData data) async {
     await _client.from('sensor_data').insert({
       'suhu': data.temperature,
       'kelembapan': data.humidity,
       'created_at': data.createdAt.toIso8601String(),
       'updated_at': data.updatedAt.toIso8601String(),
-      'fk_batas': data.fkOptimalLimit
     });
   }
 

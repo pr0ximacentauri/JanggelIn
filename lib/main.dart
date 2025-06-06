@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:c3_ppl_agro/const.dart';
+import 'package:c3_ppl_agro/services/notification_service.dart';
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
-import 'package:c3_ppl_agro/models/services/notification_service.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/auth/forgot_password_screen.dart';
 import 'package:c3_ppl_agro/views/screens/auth/login_screen.dart';
-import 'package:c3_ppl_agro/views/screens/auth/reset_screen.dart';
+import 'package:c3_ppl_agro/views/screens/auth/reset_password_screen.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
@@ -56,18 +56,31 @@ class _JanggelinContent extends State<JanggelinApp> {
   void initState() {
     super.initState();
     if (!kIsWeb) {
-      // Listen deep link stream untuk initial + runtime
+      _handleInitialUri();
       _sub = _appLinks.uriLinkStream.listen((Uri? uri) {
         if (uri != null) {
           _handleUri(uri);
         }
       }, onError: (err) {
-        debugPrint('Failed to receive deep link: $err');
+        debugPrint('Gagal menerima deep link: $err');
       });
     }
   }
 
+  Future<void> _handleInitialUri() async {
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        _handleUri(initialUri);
+      }
+    } catch (e) {
+      debugPrint('Gagal mengambil initial deep link: $e');
+    }
+  }
+
   void _handleUri(Uri uri) {
+    debugPrint('Handling URI: $uri');
+
     if (uri.scheme == 'janggelin' && uri.host == 'reset-password') {
       Navigator.push(
         context,
@@ -88,6 +101,7 @@ class _JanggelinContent extends State<JanggelinApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // ignore: deprecated_member_use
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,

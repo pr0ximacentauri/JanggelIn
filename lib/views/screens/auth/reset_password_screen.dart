@@ -21,7 +21,6 @@ class _ResetPasswordState extends State<ResetPassword> {
   void initState() {
     super.initState();
 
-    // Jika dari deep link, langsung skip email
     if (widget.fromDeepLink) {
       emailVerified = true;
     }
@@ -51,7 +50,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         child: Column(
           children: [
             if (!emailVerified) ...[
-              const Text("Masukkan email akun kamu terlebih dahulu."),
+              const Text("Masukkan email akun kamu terlebih dahulu"),
               const SizedBox(height: 16),
               TextField(
                 controller: emailTxt,
@@ -68,7 +67,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text("Email tidak cocok dengan akun saat ini.")),
+                          content: Text("Email tidak cocok dengan akun saat ini")),
                     );
                   }
                 },
@@ -105,14 +104,14 @@ class _ResetPasswordState extends State<ResetPassword> {
 
                   if (newPassword.isEmpty || confirmPassword.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Password tidak boleh kosong.")),
+                      const SnackBar(content: Text("Password tidak boleh kosong")),
                     );
                     return;
                   }
 
                   if (newPassword != confirmPassword) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Password tidak cocok.")),
+                      const SnackBar(content: Text("Password tidak cocok")),
                     );
                     return;
                   }
@@ -124,12 +123,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                       context: context,
                       builder: (_) => AlertDialog(
                         title: const Text("Berhasil"),
-                        content: const Text("Password berhasil diubah."),
+                        content: const Text("Password berhasil diubah"),
                         actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              Navigator.pushReplacementNamed(context, '/login');
+                              Navigator.pushReplacementNamed(context, '/page');
                             },
                             child: const Text("OK"),
                           ),

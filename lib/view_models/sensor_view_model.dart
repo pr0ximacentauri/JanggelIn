@@ -1,8 +1,8 @@
+import 'package:c3_ppl_agro/services/mqtt_service.dart';
+import 'package:c3_ppl_agro/services/notification_service.dart';
+import 'package:c3_ppl_agro/services/sensor_service.dart';
 import 'package:flutter/material.dart';
 import 'package:c3_ppl_agro/models/sensor_data.dart';
-import 'package:c3_ppl_agro/models/services/sensor_service.dart';
-import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
-import 'package:c3_ppl_agro/models/services/notification_service.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 
 class SensorViewModel with ChangeNotifier {
@@ -58,7 +58,6 @@ class SensorViewModel with ChangeNotifier {
           humidity: (data['humidity'] ?? 0.0).toDouble(),
           createdAt: _sensorData?.createdAt ?? DateTime.now(),
           updatedAt: DateTime.now(),
-          fkOptimalLimit: _sensorData?.fkOptimalLimit,
         );
 
         _sensorData = newSensorData;
@@ -86,7 +85,7 @@ class SensorViewModel with ChangeNotifier {
   void checkOptimalStatus(OptimalLimitViewModel optimalVM) {
     if (_sensorData == null) return;
 
-    final limit = optimalVM.getById(_sensorData!.fkOptimalLimit);
+    final limit = optimalVM.selectedLimit;
     if (limit == null) return;
 
     final isTempOptimal = optimalVM.isTemperatureOptimal(temperature, limit);

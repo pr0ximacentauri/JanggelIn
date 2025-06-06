@@ -1,6 +1,6 @@
 import 'package:c3_ppl_agro/models/optimal_limit.dart';
-import 'package:c3_ppl_agro/models/services/optimal_limit_service.dart';
-import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
+import 'package:c3_ppl_agro/services/mqtt_service.dart';
+import 'package:c3_ppl_agro/services/optimal_limit_service.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';  
 

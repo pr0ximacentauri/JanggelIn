@@ -4,6 +4,7 @@ import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
+import 'package:c3_ppl_agro/views/widgets/pull_to_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
@@ -68,7 +69,7 @@ class _ControlContentState extends State<ControlContent> {
           backgroundColor: const Color(0xFFC8DCC3),
           body: Padding(
             padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
+            child: PullToRefresh(
               child: Column(
                 children: [
                   const SizedBox(height: 5),
@@ -98,7 +99,6 @@ class _ControlContentState extends State<ControlContent> {
                       final selected = optimalLimitVM.selectedLimit;
                       if (selected == null) return;
 
-                      // Cek apakah sedang digunakan
                       if (selected == optimalLimitVM.selectedLimit) {
                         final confirm = await showDialog<bool>(
                           context: context,

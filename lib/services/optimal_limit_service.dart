@@ -1,5 +1,6 @@
+import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../optimal_limit.dart';
+
 
 class OptimalLimitService {
   final SupabaseClient _client = Supabase.instance.client;

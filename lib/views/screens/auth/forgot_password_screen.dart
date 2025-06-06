@@ -35,7 +35,7 @@ class ForgotPassword extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Reset Password",
+                  "Forgot Password",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF385A3C)),
                 ),
                 const SizedBox(height: 12),

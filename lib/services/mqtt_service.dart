@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:convert';
-import '../../const.dart';
+import '../const.dart';
 import 'dart:io';
 
 class MqttService {
@@ -63,7 +63,8 @@ class MqttService {
               'temperature': suhu,
               'humidity': kelembaban,
             });
-          } else if (topic == '${AppConfig.mqttTopicSub}') {
+          }  
+          if (topic == '${AppConfig.mqttTopicSub2}') {
             final int id = data['id_kontrol'] as int;
             final String status = data['status'] as String;
             onControlStatusChanged({

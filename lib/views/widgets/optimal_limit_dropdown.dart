@@ -34,29 +34,24 @@ class _OptimalLimitDropdownState extends State<OptimalLimitDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<OptimalLimit>(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      value: selectedLimit,
-      hint: const Text("Pilih batas optimal", style: TextStyle(color: Colors.black)),
-      isExpanded: true,
+    return DropdownButton<int>(
+      value: selectedLimit?.id,
       items: widget.limits.map((limit) {
-        return DropdownMenuItem<OptimalLimit>(
-          value: limit,
-          child: Text('Suhu: ${limit.minTemperature}-${limit.maxTemperature},''Kelembapan: ${limit.minHumidity}-${limit.maxHumidity}'),
+        return DropdownMenuItem<int>(
+          value: limit.id,
+          child: Text('Suhu: ${limit.minTemperature}-${limit.maxTemperature}, Kelembapan: ${limit.minHumidity}-${limit.maxHumidity}'),
         );
       }).toList(),
-      onChanged: (OptimalLimit? newLimit) async {
-        if (newLimit != null) {
-          setState(() {
-            selectedLimit = newLimit;
-          });
-
-          widget.optimalLimitVM.setSelectedLimit(newLimit);
-          await widget.optimalLimitVM.publishSelectedLimit();
-          widget.onLimitChanged(newLimit);
-        }
+      onChanged: (int? id) async{
+        final newLimit = widget.limits.firstWhere((limit) => limit.id == id);
+        setState(() {
+          selectedLimit = newLimit;
+        });
+        widget.optimalLimitVM.setSelectedLimit(newLimit);
+        await widget.optimalLimitVM.publishSelectedLimit();
+        widget.onLimitChanged(newLimit);
       }
-
     );
+
   }
 }

@@ -1,6 +1,6 @@
 import 'package:c3_ppl_agro/models/control.dart';
-import 'package:c3_ppl_agro/models/services/control_service.dart';
-import 'package:c3_ppl_agro/models/services/mqtt_service.dart';
+import 'package:c3_ppl_agro/services/control_service.dart';
+import 'package:c3_ppl_agro/services/mqtt_service.dart';
 import 'package:flutter/foundation.dart';
 
 class ControlViewModel with ChangeNotifier {
