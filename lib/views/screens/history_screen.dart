@@ -1,5 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:c3_ppl_agro/models/control.dart';
+import 'package:c3_ppl_agro/models/optimal_limit.dart';
+import 'package:c3_ppl_agro/view_models/control_view_model.dart';
+import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
 import 'package:c3_ppl_agro/models/sensor_data.dart';
@@ -30,8 +34,13 @@ class _HistoryContentState extends State<HistoryContent> {
   @override
   void initState() {
     super.initState();
-    final viewModel = Provider.of<SensorViewModel>(context, listen: false);
-    viewModel.getSensorHistory();
+    final sensorVM = Provider.of<SensorViewModel>(context, listen: false);
+    final optimalLimitVM = Provider.of<OptimalLimitViewModel>(context, listen: false);
+    final controlVM = Provider.of<ControlViewModel>(context, listen: false);
+
+    sensorVM.getSensorHistory();
+    optimalLimitVM.getOptimalLimit();
+    controlVM.getAllControls();
   }
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
@@ -55,8 +64,10 @@ class _HistoryContentState extends State<HistoryContent> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SensorViewModel>(context);
-    final history = viewModel.sensorHistory;
+    final sensorVM = Provider.of<SensorViewModel>(context);
+    final optimalLimitVM = Provider.of<OptimalLimitViewModel>(context);
+    final controlVM = Provider.of<ControlViewModel>(context);
+    final history = sensorVM.sensorHistory;
 
     if(history.isEmpty){
       return const Center(child: CircularProgressIndicator());
@@ -72,6 +83,17 @@ class _HistoryContentState extends State<HistoryContent> {
         ? history.where((log) =>
             DateFormat('dd-MM-yyyy').format(log.updatedAt) == selected).toList()
         : history;
+    final selectedLimit = optimalLimitVM.selectedLimit;
+    final pumpStatus = controlVM.controls.firstWhere(
+      (c) => c.device?.name == 'Pompa Air',
+      orElse: () => Control(id: 0, status: '-'),
+    ).status;
+
+    final fanStatus = controlVM.controls.firstWhere(
+      (c) => c.device?.name == 'Kipas Exhaust',
+      orElse: () => Control(id: 0,status: '-'),
+    ).status;
+
 
     return Scaffold(
       backgroundColor: const Color(0xFFC8DCC3),
@@ -98,19 +120,18 @@ class _HistoryContentState extends State<HistoryContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            if (selectedDate == null)
-              _buildSectionTitle('History Today'),
-            if (selectedDate == null) _buildDataTable(todayLogs),
+            // if (selectedDate == null)
+            //   _buildSectionTitle('History Today'),
+            // if (selectedDate == null) _buildDataTable(todayLogs, selectedLimit, actuatorStatus),
             
-            const SizedBox(height: 20),
-
+            // const SizedBox(height: 20),
             
             _buildSectionTitle(
               selectedDate != null
                   ? 'Filtered History (${DateFormat('dd-MM-yyyy').format(selectedDate!)})'
                   : 'History All',
             ),
-            _buildDataTable(filteredLogs),
+            _buildDataTable(filteredLogs, selectedLimit, pumpStatus, fanStatus),
           ],
         ),
       ),
@@ -126,7 +147,12 @@ class _HistoryContentState extends State<HistoryContent> {
     );
   }
 
-  Widget _buildDataTable(List<SensorData> logs) {
+  Widget _buildDataTable(
+    List<SensorData> logs, 
+    OptimalLimit? selectedLimit, 
+    String pumpStatus,
+    String fanStatus
+    ) {
     return Center(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -142,6 +168,12 @@ class _HistoryContentState extends State<HistoryContent> {
               DataColumn(label: Text('Waktu')),
               DataColumn(label: Text('Suhu')),
               DataColumn(label: Text('Kelembapan')),
+              DataColumn(label: Text('Suhu Minimal')),
+              DataColumn(label: Text('Suhu Maksimal')),
+              DataColumn(label: Text('Kelembapan Minimal')),
+              DataColumn(label: Text('Kelembapan Maksimal')),
+              DataColumn(label: Text('Pompa Air')),
+              DataColumn(label: Text('Kipas Exhaust')),
             ],
             rows: logs.map((log) {
               return DataRow(
@@ -149,6 +181,12 @@ class _HistoryContentState extends State<HistoryContent> {
                   DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.createdAt))),
                   DataCell(Text('${log.temperature} °C')),
                   DataCell(Text('${log.humidity} %')),
+                  DataCell(Text(selectedLimit != null ? '${selectedLimit.minTemperature} °C' : '-')),
+                DataCell(Text(selectedLimit != null ? '${selectedLimit.maxTemperature} °C' : '-')),
+                DataCell(Text(selectedLimit != null ? '${selectedLimit.minHumidity} %' : '-')),
+                DataCell(Text(selectedLimit != null ? '${selectedLimit.maxHumidity} %' : '-')),
+                DataCell(Text(pumpStatus)),
+                DataCell(Text(fanStatus))
                 ],
               );
             }).toList(),

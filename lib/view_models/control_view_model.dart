@@ -45,6 +45,7 @@ class ControlViewModel with ChangeNotifier {
     });
   }
 
+
   void _listenToMqttControlStatus() async {
     await _mqttService.connect(
       onSensorMessage: (_) {},
@@ -53,7 +54,7 @@ class ControlViewModel with ChangeNotifier {
         final String newStatus = statusData['status'] ?? 'OFF';
 
         try {
-          await _controlService.updateControlStatusById(controlId, newStatus);
+          await _controlService.insertNewControlStatus(controlId, newStatus);
 
           final index = _controls.indexWhere((c) => c.id == controlId);
           if (index != -1) {

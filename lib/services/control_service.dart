@@ -14,6 +14,14 @@ class ControlService {
     return (response as List).map((json) => Control.fromJson(json)).toList();
   }
 
+  Future<void> insertNewControlStatus(int deviceId, String status) async {
+    await _client.from('kontrol').insert({
+      'status': status,
+      'fk_perangkat': deviceId,
+    });
+  }
+
+
   Future<Control?> updateControlStatusById(int id, String newStatus) async {
     final response = await _client
         .from('kontrol')

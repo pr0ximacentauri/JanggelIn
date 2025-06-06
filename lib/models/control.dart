@@ -3,36 +3,36 @@ import 'package:c3_ppl_agro/models/device.dart';
 class Control {
   final int id;
   final String status;
-  final int? perangkatId;
-  final Device? perangkat;
+  final int? deviceId;
+  final Device? device;
 
   Control({
     required this.id,
     required this.status,
-    this.perangkatId,
-    this.perangkat,
+    this.deviceId,
+    this.device,
   });
 
   factory Control.fromJson(Map<String, dynamic> json) {
     return Control(
       id: json['id_kontrol'],
       status: json['status'],
-      perangkatId: json['fk_perangkat'],
-      perangkat: Device.fromJson(json['perangkat']),
+      deviceId: json['fk_perangkat'],
+      device: Device.fromJson(json['perangkat']),
     );
   }
 
     Control copyWith({
     int? id,
     String? status,
-    int? perangkatId,
-    Device? perangkat,
+    int? deviceId,
+    Device? device,
   }) {
     return Control(
       id: id ?? this.id,
       status: status ?? this.status,
-      perangkatId: perangkatId ?? this.perangkatId,
-      perangkat: perangkat ?? this.perangkat,
+      deviceId: deviceId ?? this.deviceId,
+      device: device ?? this.device,
     );
   }
 }

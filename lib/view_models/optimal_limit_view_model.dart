@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';  
 
 class OptimalLimitViewModel with ChangeNotifier {
-  final OptimalLimitService _optimalLimitervice = OptimalLimitService();
+  final OptimalLimitService _optimalLimitService = OptimalLimitService();
   final MqttService _mqttService = MqttService();
 
   OptimalLimit? _limit;
@@ -43,12 +43,12 @@ bool _selectedLimitIsValid() {
 }
 
   Future<void> getOptimalLimit() async {
-    _limit = await _optimalLimitervice.fetchOptimalLimit();
+    _limit = await _optimalLimitService.fetchOptimalLimit();
     notifyListeners();
   }
 
   Future<void> getAllOptimalLimits() async {
-    _limits = await _optimalLimitervice.fetchAllOptimalLimits();
+    _limits = await _optimalLimitService.fetchAllOptimalLimits();
     if (_limits.isNotEmpty) {
       _selectedLimit = _limits.first;
     }
@@ -85,7 +85,7 @@ bool _selectedLimitIsValid() {
         current.maxHumidity == maxHumidity) {
       return;
     }
-    await _optimalLimitervice.insertOptimalLimit(
+    await _optimalLimitService.insertOptimalLimit(
       minTemperature: minTemperature,
       maxTemperature: maxTemperature,
       minHumidity: minHumidity,
@@ -97,7 +97,7 @@ bool _selectedLimitIsValid() {
   } 
 
   Future<void> deleteOptimalLimit(int id) async {
-    await _optimalLimitervice.deleteOptimalLimit(id);
+    await _optimalLimitService.deleteOptimalLimit(id);
 
     limits.removeWhere((limit) => limit.id == id);
     if (selectedLimit?.id == id) {

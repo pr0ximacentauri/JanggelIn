@@ -124,7 +124,6 @@ class _ControlContentState extends State<ControlContent> {
                             const SnackBar(content: Text("Batas optimal berhasil dihapus")),
                           );
                           setState(() {
-                            // Kosongkan isian
                             MinSuhuTxt.clear();
                             MaxSuhuTxt.clear();
                             MinKelembapanTxt.clear();

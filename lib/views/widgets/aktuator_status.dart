@@ -17,7 +17,7 @@ class AktuatorStatus extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          control.perangkat?.name ?? 'Unknown',
+          control.device?.name ?? 'Unknown',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         ElevatedButton.icon(
