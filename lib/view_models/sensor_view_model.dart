@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:c3_ppl_agro/services/mqtt_service.dart';
 import 'package:c3_ppl_agro/services/notification_service.dart';
 import 'package:c3_ppl_agro/services/sensor_service.dart';
@@ -14,15 +16,25 @@ class SensorViewModel with ChangeNotifier {
   List<SensorData> _sensorHistory = [];
   bool _wasOptimal = true;
 
+  DateTime? _lastMqttUpdate;
+  final Duration _mqttTimeout = Duration(minutes: 2);
+  Timer? _timeoutChecker;
+
   SensorData? get sensorData => _sensorData;
   double get temperature => _sensorData?.temperature ?? 0.0;
   double get humidity => _sensorData?.humidity ?? 0.0;
   List<SensorData> get sensorHistory => _sensorHistory;
   bool get hasSensorData => _sensorData != null;
 
+  bool get isSensorOnline {
+    if (_lastMqttUpdate == null) return false;
+    return DateTime.now().difference(_lastMqttUpdate!) <= _mqttTimeout;
+  }
+
   String get updatedAtFormatted {
+    if (isSensorOnline == false) return 'Belum ada data sensor!';
     final updatedAt = _sensorData?.updatedAt;
-    if (updatedAt == null) return 'Belum ada data sensor!';
+    if (updatedAt == null) return 'Belum ada data sensor saat terbaru!';
     return 'Terakhir diperbarui: '
         '${updatedAt.day.toString().padLeft(2, '0')}-'
         '${updatedAt.month.toString().padLeft(2, '0')}-'
@@ -39,6 +51,7 @@ class SensorViewModel with ChangeNotifier {
       notifyListeners();
     });
     _listenToMqttSensorData();
+    _startTimeoutChecker();
   }
 
   Future<void> getSensorData() async {
@@ -58,7 +71,7 @@ class SensorViewModel with ChangeNotifier {
           id: 0,
           temperature: (data['temperature'] ?? 0.0).toDouble(),
           humidity: (data['humidity'] ?? 0.0).toDouble(),
-          createdAt: _sensorData?.createdAt ?? DateTime.now(),
+          createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           fkOptimalLimit: selectedLimitId,
         );
@@ -109,5 +122,27 @@ class SensorViewModel with ChangeNotifier {
         );
       }
     }
+  }
+
+  void _startTimeoutChecker() {
+    _timeoutChecker = Timer.periodic(Duration(seconds: 30), (timer) {
+      if (_lastMqttUpdate == null) return;
+
+      final now = DateTime.now();
+      final difference = now.difference(_lastMqttUpdate!);
+
+      if (difference > _mqttTimeout) {
+        if (_sensorData != null) {
+          _sensorData = null;
+          notifyListeners();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timeoutChecker?.cancel();
+    super.dispose();
   }
 }

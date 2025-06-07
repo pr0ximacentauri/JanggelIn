@@ -19,8 +19,8 @@ class SensorService {
   Future<List<SensorData>> fetchAllSensorData() async {
     final response = await _client
         .from('sensor_data')
-        .select()
-        .order('created_at', ascending: false);
+        .select('*, batas_optimal(*)') 
+        .order('updated_at', ascending: false);
 
     return (response as List)
         .map((json) => SensorData.fromJson(json))

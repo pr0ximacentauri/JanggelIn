@@ -21,20 +21,20 @@ class SensorCard extends StatelessWidget {
     final optimalLimit = optimalVM.selectedLimit;
 
     String valueText = 'None';
-    if (value == 'temperature' && sensorVM.hasSensorData) {
+    if (value == 'temperature' && sensorVM.isSensorOnline) {
       valueText = '${sensorVM.temperature.toStringAsFixed(1)} °C';
-    } else if (value == 'humidity' && sensorVM.hasSensorData) {
+    } else if (value == 'humidity' && sensorVM.isSensorOnline) {
       valueText = '${sensorVM.humidity.toStringAsFixed(1)} %';
     }
 
     bool isOptimal = false;
-    if (sensorVM.hasSensorData && optimalLimit != null) {
+    if (sensorVM.isSensorOnline && optimalLimit != null) {
       isOptimal = (value == 'temperature')
           ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
           : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
     }
 
-    final bool showNone = !sensorVM.hasSensorData || optimalLimit == null; 
+    final bool showNone = !sensorVM.isSensorOnline || optimalLimit == null; 
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -166,7 +166,7 @@ class _HistoryContentState extends State<HistoryContent> {
               final limit = log.optimalLimit;
               return DataRow(
                 cells: [
-                  DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.createdAt))),
+                  DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.updatedAt))),
                   DataCell(Text('${log.temperature} °C')),
                   DataCell(Text('${log.humidity} %')),
                   DataCell(Text(limit != null ? '${limit.minTemperature} °C' : '-')),
