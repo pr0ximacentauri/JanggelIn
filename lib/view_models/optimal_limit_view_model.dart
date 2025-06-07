@@ -2,7 +2,8 @@ import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/services/mqtt_service.dart';
 import 'package:c3_ppl_agro/services/optimal_limit_service.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';  
+import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';  
 
 class OptimalLimitViewModel with ChangeNotifier {
   final OptimalLimitService _optimalLimitService = OptimalLimitService();
@@ -34,7 +35,7 @@ class OptimalLimitViewModel with ChangeNotifier {
       maxHumidity: _selectedLimit!.maxHumidity,
     );
   } else {
-    debugPrint('⚠️ MQTT belum terhubung');
+    debugPrint('MQTT belum terhubung');
   }
 }
 
@@ -107,13 +108,17 @@ bool _selectedLimitIsValid() {
     notifyListeners();
   }
 
-  void updateSelectedLimitAfterDeletion(List<OptimalLimit> limits) {
+  void updateSelectedLimitAfterDeletion(List<OptimalLimit> limits) async{
+    final prefs = await SharedPreferences.getInstance();
+
     if (selectedLimit != null && !limits.any((limit) => limit.id == selectedLimit!.id)) {
       if (limits.isNotEmpty) {
         setSelectedLimit(limits.first);
         publishSelectedLimit();
+        await prefs.setInt('selected_optimal_limit_id', limits.first.id);
       } else {
         setSelectedLimit(null);
+        await prefs.remove('selected_optimal_limit_id');
       }
     }
   }
