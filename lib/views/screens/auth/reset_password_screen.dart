@@ -4,8 +4,13 @@ import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
   final bool fromDeepLink;
+  final String? email;
 
-  const ResetPassword({super.key, this.fromDeepLink = false});
+  const ResetPassword({
+    super.key,
+    this.fromDeepLink = false,
+    this.email,
+  });
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -21,8 +26,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   void initState() {
     super.initState();
 
-    if (widget.fromDeepLink) {
+    if (widget.email != null || widget.fromDeepLink) {
       emailVerified = true;
+      emailTxt.text = widget.email ?? "";
     }
   }
 
@@ -66,8 +72,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     setState(() => emailVerified = true);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Email tidak cocok dengan akun saat ini")),
+                      const SnackBar(content: Text("Email tidak cocok dengan akun saat ini")),
                     );
                   }
                 },

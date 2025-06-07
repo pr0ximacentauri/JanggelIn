@@ -77,6 +77,8 @@ class SensorViewModel with ChangeNotifier {
         );
 
         _sensorData = newSensorData;
+         _lastMqttUpdate = DateTime.now();
+
         notifyListeners();
 
         await _saveToDatabase();

@@ -61,11 +61,6 @@ class ForgotPassword extends StatelessWidget {
                   ),
                 ),
 
-                // if (authVM.error != null) ...[
-                //   const SizedBox(height: 12),
-                //   Text(authVM.error!, style: const TextStyle(color: Colors.red)),
-                // ],
-
                 const SizedBox(height: 20),
 
                 ElevatedButton(

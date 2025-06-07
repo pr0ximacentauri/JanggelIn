@@ -12,10 +12,12 @@ import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:app_links/app_links.dart';
-import 'views/screens/home_screen.dart'; 
+import 'views/screens/home_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +27,7 @@ void main() async {
     anonKey: AppConfig.supabaseAnonKey,
   );
   await NotificationService.init();
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
@@ -50,20 +53,23 @@ class JanggelinApp extends StatefulWidget {
 
 class _JanggelinContent extends State<JanggelinApp> {
   final AppLinks _appLinks = AppLinks();
-  StreamSubscription<Uri?>? _sub;
+  StreamSubscription<Uri>? _sub;
 
   @override
   void initState() {
     super.initState();
     if (!kIsWeb) {
       _handleInitialUri();
-      _sub = _appLinks.uriLinkStream.listen((Uri? uri) {
-        if (uri != null) {
-          _handleUri(uri);
-        }
-      }, onError: (err) {
-        debugPrint('Gagal menerima deep link: $err');
-      });
+      _sub = _appLinks.uriLinkStream.listen(
+        (Uri? uri) {
+          if (uri != null) {
+            _handleUri(uri);
+          }
+        },
+        onError: (err) {
+          debugPrint('Gagal menerima deep link: $err');
+        },
+      );
     }
   }
 
@@ -81,13 +87,25 @@ class _JanggelinContent extends State<JanggelinApp> {
   void _handleUri(Uri uri) {
     debugPrint('Handling URI: $uri');
 
+    if (uri.queryParameters.containsKey('error')) {
+      final errorDesc = uri.queryParameters['error_description'];
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Link tidak valid: $errorDesc')),
+        );
+      }
+      return;
+    }
+
     if (uri.scheme == 'janggelin' && uri.host == 'reset-password') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const ResetPassword(fromDeepLink: true),
-        ),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (_) => const ResetPassword(fromDeepLink: true),
+          ),
+        );
+      });
     }
   }
 
@@ -100,8 +118,8 @@ class _JanggelinContent extends State<JanggelinApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, // <--- Penting!
       debugShowCheckedModeBanner: false,
-      // ignore: deprecated_member_use
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
