@@ -47,7 +47,7 @@ class ControlViewModel with ChangeNotifier {
         final int deviceId = statusData['fk_perangkat'] ?? 1;
 
         try {
-          await _controlService.insertNewControlStatusByDeviceId(newStatus, deviceId);
+          await _controlService.uploadControlStatusByDeviceId(newStatus, deviceId);
 
           final index = _controls.indexWhere((c) => c.id == deviceId);
           if (index != -1) {

@@ -21,14 +21,14 @@ class SensorCard extends StatelessWidget {
     final optimalLimit = optimalVM.selectedLimit;
 
     String valueText = 'None';
-    if (value == 'temperature' && sensorVM.isSensorOnline) {
+    if (value == 'temperature' && sensorVM.hasSensorData) {
       valueText = '${sensorVM.temperature.toStringAsFixed(1)} °C';
-    } else if (value == 'humidity' && sensorVM.isSensorOnline) {
+    } else if (value == 'humidity' && sensorVM.hasSensorData) {
       valueText = '${sensorVM.humidity.toStringAsFixed(1)} %';
     }
 
     bool isOptimal = false;
-    if (sensorVM.isSensorOnline && optimalLimit != null) {
+    if (sensorVM.hasSensorData && optimalLimit != null) {
       isOptimal = (value == 'temperature')
           ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
           : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);

@@ -12,6 +12,7 @@ class OptimalLimitViewModel with ChangeNotifier {
   OptimalLimit? _limit;
   List<OptimalLimit> _limits = [];
   OptimalLimit? _selectedLimit;
+
   OptimalLimit? get limit => _limit;
   List<OptimalLimit> get limits => _limits;
   OptimalLimit? get selectedLimit => _selectedLimit;
@@ -19,29 +20,55 @@ class OptimalLimitViewModel with ChangeNotifier {
   OptimalLimitViewModel() {
     getOptimalLimit();
     getAllOptimalLimits();
+    loadSelectedLimit(); 
+  }
+
+  /// Memuat selected limit berdasarkan ID tersimpan
+  Future<void> loadSelectedLimit() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedId = prefs.getInt('selected_optimal_limit_id');
+
+    if (savedId != null && _limits.isNotEmpty) {
+      final matched = _limits.firstWhereOrNull((limit) => limit.id == savedId);
+      if (matched != null) {
+        _selectedLimit = matched;
+        notifyListeners();
+        debugPrint('Selected limit loaded: ID ${matched.id}');
+      }
+    }
+  }
+
+  Future<void> saveSelectedLimit(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('selected_optimal_limit_id', id);
+  }
+
+  void setSelectedLimit(OptimalLimit? limit) {
+    _selectedLimit = limit;
+    notifyListeners();
   }
 
   Future<void> publishSelectedLimit() async {
-  if (!_selectedLimitIsValid()) {
-    debugPrint('Tidak ada batas optimal yang valid untuk dipublish');
-    return;
+    if (!_selectedLimitIsValid()) {
+      debugPrint('Tidak ada batas optimal yang valid untuk dipublish');
+      return;
+    }
+
+    if (_mqttService.isConnected) {
+      await _mqttService.publishOptimalLimit(
+        minTemperature: _selectedLimit!.minTemperature,
+        maxTemperature: _selectedLimit!.maxTemperature,
+        minHumidity: _selectedLimit!.minHumidity,
+        maxHumidity: _selectedLimit!.maxHumidity,
+      );
+    } else {
+      debugPrint('MQTT belum terhubung');
+    }
   }
 
-  if (_mqttService.isConnected) {
-    await _mqttService.publishOptimalLimit(
-      minTemperature: _selectedLimit!.minTemperature,
-      maxTemperature: _selectedLimit!.maxTemperature,
-      minHumidity: _selectedLimit!.minHumidity,
-      maxHumidity: _selectedLimit!.maxHumidity,
-    );
-  } else {
-    debugPrint('MQTT belum terhubung');
+  bool _selectedLimitIsValid() {
+    return _selectedLimit != null;
   }
-}
-
-bool _selectedLimitIsValid() {
-  return _selectedLimit != null;
-}
 
   Future<void> getOptimalLimit() async {
     _limit = await _optimalLimitService.fetchOptimalLimit();
@@ -50,16 +77,9 @@ bool _selectedLimitIsValid() {
 
   Future<void> getAllOptimalLimits() async {
     _limits = await _optimalLimitService.fetchAllOptimalLimits();
-    if (_limits.isNotEmpty) {
-      _selectedLimit = _limits.first;
-    }
     notifyListeners();
-  }
 
-
-  void setSelectedLimit(OptimalLimit? limit) {
-    _selectedLimit = limit;
-    notifyListeners();
+    await loadSelectedLimit();
   }
 
   OptimalLimit? getById(int? id) {
@@ -86,6 +106,7 @@ bool _selectedLimitIsValid() {
         current.maxHumidity == maxHumidity) {
       return;
     }
+
     await _optimalLimitService.insertOptimalLimit(
       minTemperature: minTemperature,
       maxTemperature: maxTemperature,
@@ -94,28 +115,31 @@ bool _selectedLimitIsValid() {
     );
 
     await getOptimalLimit();
-    await getAllOptimalLimits(); 
-  } 
+    await getAllOptimalLimits();
+  }
 
   Future<void> deleteOptimalLimit(int id) async {
     await _optimalLimitService.deleteOptimalLimit(id);
-
     limits.removeWhere((limit) => limit.id == id);
+
     if (selectedLimit?.id == id) {
       _selectedLimit = null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('selected_optimal_limit_id');
     }
 
     notifyListeners();
   }
 
-  void updateSelectedLimitAfterDeletion(List<OptimalLimit> limits) async{
+  void updateSelectedLimitAfterDeletion(List<OptimalLimit> limits) async {
     final prefs = await SharedPreferences.getInstance();
 
-    if (selectedLimit != null && !limits.any((limit) => limit.id == selectedLimit!.id)) {
+    if (selectedLimit != null &&
+        !limits.any((limit) => limit.id == selectedLimit!.id)) {
       if (limits.isNotEmpty) {
         setSelectedLimit(limits.first);
-        publishSelectedLimit();
-        await prefs.setInt('selected_optimal_limit_id', limits.first.id);
+        await saveSelectedLimit(limits.first.id);
+        await publishSelectedLimit();
       } else {
         setSelectedLimit(null);
         await prefs.remove('selected_optimal_limit_id');
@@ -123,15 +147,11 @@ bool _selectedLimitIsValid() {
     }
   }
 
-
   bool isTemperatureOptimal(double temperature, OptimalLimit limit) {
-    // if (_limit == null) return true;
     return temperature >= limit.minTemperature && temperature <= limit.maxTemperature;
   }
 
   bool isHumidityOptimal(double humidity, OptimalLimit limit) {
-    // if (_limit == null) return true;
     return humidity >= limit.minHumidity && humidity <= limit.maxHumidity;
   }
-  
 }
