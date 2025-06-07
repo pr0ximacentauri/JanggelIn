@@ -64,8 +64,14 @@ class _OptimalLimitDropdownState extends State<OptimalLimitDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    final selected = widget.optimalLimitVM.selectedLimit;
+    final validSelected = selected != null &&
+        widget.limits.any((limit) => limit.id == selected.id)
+        ? selected
+        : null;
+
     return DropdownButton<int>(
-      value: selectedLimit?.id,
+      value: validSelected?.id,
       items: widget.limits.map((limit) {
         return DropdownMenuItem<int>(
           value: limit.id,

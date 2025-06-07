@@ -56,7 +56,7 @@ bool _selectedLimitIsValid() {
   }
 
 
-  void setSelectedLimit(OptimalLimit limit) {
+  void setSelectedLimit(OptimalLimit? limit) {
     _selectedLimit = limit;
     notifyListeners();
   }
@@ -105,6 +105,17 @@ bool _selectedLimitIsValid() {
     }
 
     notifyListeners();
+  }
+
+  void updateSelectedLimitAfterDeletion(List<OptimalLimit> limits) {
+    if (selectedLimit != null && !limits.any((limit) => limit.id == selectedLimit!.id)) {
+      if (limits.isNotEmpty) {
+        setSelectedLimit(limits.first);
+        publishSelectedLimit();
+      } else {
+        setSelectedLimit(null);
+      }
+    }
   }
 
 

@@ -120,21 +120,27 @@ class _ControlContentState extends State<ControlContent> {
 
                         if (confirm == true) {
                           await optimalLimitVM.deleteOptimalLimit(selected.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Batas optimal berhasil dihapus")),
-                          );
+                          final updatedLimits = optimalLimitVM.limits;
+
                           setState(() {
                             MinSuhuTxt.clear();
                             MaxSuhuTxt.clear();
                             MinKelembapanTxt.clear();
                             MaxKelembapanTxt.clear();
+
+                            if(updatedLimits.isNotEmpty) {
+                              final newSelectedLimit = updatedLimits.first;
+                              optimalLimitVM.setSelectedLimit(newSelectedLimit);
+                              _setInitialLimitText(newSelectedLimit);
+                            }else {
+                              optimalLimitVM.setSelectedLimit(null);
+                            }
                           });
+                          optimalLimitVM.updateSelectedLimitAfterDeletion(optimalLimitVM.limits);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Batas optimal berhasil dihapus")),
+                          );
                         }
-                      } else {
-                        await optimalLimitVM.deleteOptimalLimit(selected.id);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Batas optimal berhasil dihapus")),
-                        );
                       }
                     },
                     icon: const Icon(Icons.delete),
@@ -192,6 +198,16 @@ class _ControlContentState extends State<ControlContent> {
                       final minKelembapan = double.tryParse(MinKelembapanTxt.text.trim());
                       final maxKelembapan = double.tryParse(MaxKelembapanTxt.text.trim());
 
+                      if (minSuhu == null || maxSuhu == null || minKelembapan == null || maxKelembapan == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Harap lengkapi semua data terlebih dahulu'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                        return;
+                      }
+
                       final isSameSuhu = minSuhu == maxSuhu;
                       final isSameKelembapan = minKelembapan == maxKelembapan;
 
@@ -231,10 +247,10 @@ class _ControlContentState extends State<ControlContent> {
                       }
                      
                       await optimalLimitVM.updateOptimalLimit(
-                        minTemperature: minSuhu!,
-                        maxTemperature: maxSuhu!,
-                        minHumidity: minKelembapan!,
-                        maxHumidity: maxKelembapan!,
+                        minTemperature: minSuhu,
+                        maxTemperature: maxSuhu,
+                        minHumidity: minKelembapan,
+                        maxHumidity: maxKelembapan,
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(
