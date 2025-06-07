@@ -1,3 +1,4 @@
+import 'package:c3_ppl_agro/models/optimal_limit.dart';
 
 class SensorData {
   final int id;
@@ -5,6 +6,8 @@ class SensorData {
   double humidity;
   DateTime createdAt;
   DateTime updatedAt;
+  int? fkOptimalLimit;
+  OptimalLimit? optimalLimit;
 
   SensorData({
     required this.id,
@@ -12,6 +15,8 @@ class SensorData {
     this.humidity = 0.0,
     required this.createdAt,
     required this.updatedAt,
+    this.fkOptimalLimit,
+    this.optimalLimit,
   });
 
   Map<String, dynamic> toJson() {
@@ -21,6 +26,7 @@ class SensorData {
       'kelembapan': humidity,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      'fk_batas': fkOptimalLimit,
     };
   }
 
@@ -31,6 +37,10 @@ class SensorData {
       humidity: (json['kelembapan'] as num).toDouble(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
+      fkOptimalLimit: json['fk_batas'],
+      optimalLimit: json['batas_optimal'] != null
+          ? OptimalLimit.fromJson(json['batas_optimal'])
+          : null,
     );
   }
 }

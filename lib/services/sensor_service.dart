@@ -47,6 +47,7 @@ class SensorService {
       'kelembapan': data.humidity,
       'created_at': data.createdAt.toIso8601String(),
       'updated_at': data.updatedAt.toIso8601String(),
+      'fk_batas': data.fkOptimalLimit
     });
   }
 

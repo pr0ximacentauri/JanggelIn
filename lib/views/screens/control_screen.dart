@@ -52,8 +52,8 @@ class _ControlContentState extends State<ControlContent> {
   Widget build(BuildContext context) {
     return Consumer3<ControlViewModel, OptimalLimitViewModel, SensorViewModel>(
       builder: (context, controlVM, optimalLimitVM, sensorVM, _) {
-        final pompa = controlVM.getControlById(1);
-        final kipas = controlVM.getControlById(2);
+        final pompa = controlVM.getControlByDeviceId(1);
+        final kipas = controlVM.getControlByDeviceId(2);
         // final lampu = controlVM.getControlById(3);
 
         if (!_isInitialized && optimalLimitVM.limits.isNotEmpty && sensorVM.sensorData != null) {
@@ -75,9 +75,9 @@ class _ControlContentState extends State<ControlContent> {
                   const SizedBox(height: 5),
                   Text("Aktuator", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
-                  AktuatorStatus(control: pompa),
+                  AktuatorStatus(controlAsync: pompa),
                   const SizedBox(height: 16),
-                  AktuatorStatus(control: kipas),
+                  AktuatorStatus(controlAsync: kipas),
                   const SizedBox(height: 16),
                   const Divider(thickness: 1, color: Colors.grey),
 

@@ -26,6 +26,7 @@ class OptimalLimitService {
         .select()
         .order('updated_at', ascending: true);
 
+    // ignore: unnecessary_null_comparison
     if (response != null) {
       return (response as List)
           .map((json) => OptimalLimit.fromJson(json))

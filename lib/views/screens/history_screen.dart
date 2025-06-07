@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:c3_ppl_agro/models/control.dart';
-import 'package:c3_ppl_agro/models/optimal_limit.dart';
 import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
@@ -65,25 +64,20 @@ class _HistoryContentState extends State<HistoryContent> {
   @override
   Widget build(BuildContext context) {
     final sensorVM = Provider.of<SensorViewModel>(context);
-    final optimalLimitVM = Provider.of<OptimalLimitViewModel>(context);
     final controlVM = Provider.of<ControlViewModel>(context);
     final history = sensorVM.sensorHistory;
 
     if(history.isEmpty){
       return const Center(child: CircularProgressIndicator());
     }
-    String today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     String? selected = selectedDate != null
         ? DateFormat('dd-MM-yyyy').format(selectedDate!)
         : null;
-    final todayLogs = history.where((log) =>
-        DateFormat('dd-MM-yyyy').format(log.updatedAt) == today).toList();
 
     final filteredLogs = selected != null
         ? history.where((log) =>
             DateFormat('dd-MM-yyyy').format(log.updatedAt) == selected).toList()
         : history;
-    final selectedLimit = optimalLimitVM.selectedLimit;
     final pumpStatus = controlVM.controls.firstWhere(
       (c) => c.device?.name == 'Pompa Air',
       orElse: () => Control(id: 0, status: '-'),
@@ -119,19 +113,13 @@ class _HistoryContentState extends State<HistoryContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // if (selectedDate == null)
-            //   _buildSectionTitle('History Today'),
-            // if (selectedDate == null) _buildDataTable(todayLogs, selectedLimit, actuatorStatus),
-            
-            // const SizedBox(height: 20),
             
             _buildSectionTitle(
               selectedDate != null
                   ? 'Filtered History (${DateFormat('dd-MM-yyyy').format(selectedDate!)})'
                   : 'History All',
             ),
-            _buildDataTable(filteredLogs, selectedLimit, pumpStatus, fanStatus),
+            _buildDataTable(filteredLogs, pumpStatus, fanStatus),
           ],
         ),
       ),
@@ -148,8 +136,7 @@ class _HistoryContentState extends State<HistoryContent> {
   }
 
   Widget _buildDataTable(
-    List<SensorData> logs, 
-    OptimalLimit? selectedLimit, 
+    List<SensorData> logs,
     String pumpStatus,
     String fanStatus
     ) {
@@ -176,17 +163,18 @@ class _HistoryContentState extends State<HistoryContent> {
               DataColumn(label: Text('Kipas Exhaust')),
             ],
             rows: logs.map((log) {
+              final limit = log.optimalLimit;
               return DataRow(
                 cells: [
                   DataCell(Text(DateFormat('dd-MM-yyyy HH:mm').format(log.createdAt))),
                   DataCell(Text('${log.temperature} °C')),
                   DataCell(Text('${log.humidity} %')),
-                  DataCell(Text(selectedLimit != null ? '${selectedLimit.minTemperature} °C' : '-')),
-                DataCell(Text(selectedLimit != null ? '${selectedLimit.maxTemperature} °C' : '-')),
-                DataCell(Text(selectedLimit != null ? '${selectedLimit.minHumidity} %' : '-')),
-                DataCell(Text(selectedLimit != null ? '${selectedLimit.maxHumidity} %' : '-')),
-                DataCell(Text(pumpStatus)),
-                DataCell(Text(fanStatus))
+                  DataCell(Text(limit != null ? '${limit.minTemperature} °C' : '-')),
+                  DataCell(Text(limit != null ? '${limit.maxTemperature} °C' : '-')),
+                  DataCell(Text(limit != null ? '${limit.minHumidity} %' : '-')),
+                  DataCell(Text(limit != null ? '${limit.maxHumidity} %' : '-')),
+                  DataCell(Text(pumpStatus)),
+                  DataCell(Text(fanStatus))
                 ],
               );
             }).toList(),

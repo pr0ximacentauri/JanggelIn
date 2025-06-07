@@ -8,6 +8,7 @@ import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();
   final MqttService _mqttService = MqttService();
+  final OptimalLimitViewModel optimalLimitVM = OptimalLimitViewModel();
 
   SensorData? _sensorData;
   List<SensorData> _sensorHistory = [];
@@ -52,12 +53,14 @@ class SensorViewModel with ChangeNotifier {
 
   void _listenToMqttSensorData() async {
     await _mqttService.connect(onSensorMessage: (data) async {
+      final selectedLimitId = optimalLimitVM.selectedLimit?.id;
         final newSensorData = SensorData(
           id: 0,
           temperature: (data['temperature'] ?? 0.0).toDouble(),
           humidity: (data['humidity'] ?? 0.0).toDouble(),
           createdAt: _sensorData?.createdAt ?? DateTime.now(),
           updatedAt: DateTime.now(),
+          fkOptimalLimit: selectedLimitId,
         );
 
         _sensorData = newSensorData;

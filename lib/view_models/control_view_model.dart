@@ -25,14 +25,8 @@ class ControlViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Control getControlById(int id) {
-    return _controls.firstWhere(
-      (control) => control.id == id,
-      orElse: () => Control(
-        id: id,
-        status: 'OFF',
-      ),
-    );
+  Future<Control> getControlByDeviceId(int deviceId) async{
+    return await _controlService.getLatestControlByDeviceId(deviceId);
   }
 
   void _listenToRealtimeControlChanges() {
@@ -45,23 +39,22 @@ class ControlViewModel with ChangeNotifier {
     });
   }
 
-
   void _listenToMqttControlStatus() async {
     await _mqttService.connect(
       onSensorMessage: (_) {},
       onControlStatusChanged: (statusData) async {
-        final int controlId = statusData['id'] ?? 1;
         final String newStatus = statusData['status'] ?? 'OFF';
+        final int deviceId = statusData['fk_perangkat'] ?? 1;
 
         try {
-          await _controlService.insertNewControlStatus(controlId, newStatus);
+          await _controlService.insertNewControlStatusByDeviceId(newStatus, deviceId);
 
-          final index = _controls.indexWhere((c) => c.id == controlId);
+          final index = _controls.indexWhere((c) => c.id == deviceId);
           if (index != -1) {
             _controls[index] = _controls[index].copyWith(status: newStatus);
             notifyListeners();
           }
-          debugPrint('Status kontrol diperbarui dari MQTT: $controlId => $newStatus');
+          debugPrint('Status kontrol diperbarui dari MQTT: $deviceId => $newStatus');
         } catch (e) {
           debugPrint('Gagal update status dari MQTT: $e');
         }
