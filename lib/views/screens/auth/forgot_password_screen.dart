@@ -55,7 +55,7 @@ class ForgotPassword extends StatelessWidget {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.green, width: 2), // warna saat fokus
+                      borderSide: BorderSide(color: Colors.green, width: 2),
                     ),
                     prefixIcon: const Icon(Icons.email),
                   ),

@@ -102,13 +102,13 @@ class AccountContent extends StatelessWidget {
                       final confirmLogout = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          backgroundColor: const Color(0xFF5E7154),
-                          title: const Text("Konfirmasi", style: TextStyle(color: Colors.white)),
-                          content: const Text("Apakah kamu yakin ingin logout?", style: TextStyle(color: Colors.white70)),
+                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                          title: const Text("Konfirmasi", style: TextStyle(color: Colors.black)),
+                          content: const Text("Apakah kamu yakin ingin logout?", style: TextStyle(color: Colors.black)),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text("Batal", style: TextStyle(color: Colors.white)),
+                              child: const Text("Batal", style: TextStyle(color: Colors.black)),
                             ),
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(true),
