@@ -9,12 +9,12 @@ class ControlViewModel with ChangeNotifier {
 
   List<Control> _controls = [];
   List<Control> get controls => _controls;
-
+  final Map<int, String> _lastStatusPerDevice = {};
   ControlViewModel() {
-    _init();
+    init();
   }
 
-  Future<void> _init() async {
+  Future<void> init() async {
     await getAllControls();
     _listenToRealtimeControlChanges();
     _listenToMqttControlStatus();
@@ -40,25 +40,36 @@ class ControlViewModel with ChangeNotifier {
   }
 
   void _listenToMqttControlStatus() async {
-    await _mqttService.connect(
-      onSensorMessage: (_) {},
-      onControlStatusChanged: (statusData) async {
-        final String newStatus = statusData['status'] ?? 'OFF';
-        final int deviceId = statusData['fk_perangkat'] ?? 1;
+  await _mqttService.connect(
+    onSensorMessage: (_) {},
+    onControlStatusChanged: (statusData) async {
+      final String newStatus = statusData['status'] ?? 'OFF';
+      final int deviceId = statusData['fk_perangkat'] ?? 1;
 
+      final String? lastStatus = _lastStatusPerDevice[deviceId];
+
+      // Hanya insert jika status berubah
+      if (lastStatus != newStatus) {
         try {
           await _controlService.uploadControlStatusByDeviceId(newStatus, deviceId);
 
+          // Simpan status terakhir
+          _lastStatusPerDevice[deviceId] = newStatus;
+
+          // Update di local state (misalnya untuk UI)
           final index = _controls.indexWhere((c) => c.id == deviceId);
           if (index != -1) {
             _controls[index] = _controls[index].copyWith(status: newStatus);
             notifyListeners();
           }
+
           debugPrint('Status kontrol diperbarui dari MQTT: $deviceId => $newStatus');
         } catch (e) {
           debugPrint('Gagal update status dari MQTT: $e');
         }
-      },
-    );
-  }
+      }
+    },
+  );
+}
+
 }

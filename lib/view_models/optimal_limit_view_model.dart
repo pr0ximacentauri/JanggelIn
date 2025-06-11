@@ -23,7 +23,6 @@ class OptimalLimitViewModel with ChangeNotifier {
     loadSelectedLimit(); 
   }
 
-  /// Memuat selected limit berdasarkan ID tersimpan
   Future<void> loadSelectedLimit() async {
     final prefs = await SharedPreferences.getInstance();
     final savedId = prefs.getInt('selected_optimal_limit_id');

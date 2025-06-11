@@ -46,6 +46,16 @@ class _ControlContentState extends State<ControlContent> {
       MinKelembapanTxt.text = limit.minHumidity.toString();
       MaxKelembapanTxt.text = limit.maxHumidity.toString();
     }
+
+    @override
+    void initState() {
+      super.initState();
+      
+      Future.microtask(() {
+        final controlVM = Provider.of<ControlViewModel>(context, listen: false);
+        controlVM.init();
+      });
+    }
   }
 
   @override
@@ -143,8 +153,8 @@ class _ControlContentState extends State<ControlContent> {
                         }
                       }
                     },
-                    icon: const Icon(Icons.delete),
-                    label: const Text("Hapus Batas Ini"),
+                    icon: const Icon(Icons.delete, color: Colors.white),
+                    label: const Text("Hapus Batas Ini", style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   ),
 

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
 import 'package:c3_ppl_agro/views/screens/account_screen.dart';
 import 'package:c3_ppl_agro/views/screens/auth/login_screen.dart';
@@ -27,11 +29,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   void initState() {
     super.initState();
-    if (widget.fromDeepLink && widget.email != null) {
+    if (widget.email != null) {
       emailTxt.text = widget.email!;
-      emailVerified = true;
-    } else if (widget.email != null) {
-      emailTxt.text = widget.email!;
+      if (widget.fromDeepLink) emailVerified = true;
     }
   }
 
@@ -50,6 +50,10 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFC8DCC3),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5E7154),
+        title: const Text("Reset Password"),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -69,47 +73,32 @@ class _ResetPasswordState extends State<ResetPassword> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "Reset Password",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF385A3C)),
-                ),
                 const SizedBox(height: 12),
                 if (!emailVerified && !widget.fromDeepLink) ...[
                   const Text(
-                    "Masukkan email akun kamu terlebih dahulu untuk verifikasi",
+                    "Masukkan email kamu untuk verifikasi",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black87),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: emailTxt,
+                    keyboardType: TextInputType.emailAddress,
                     readOnly: widget.email != null,
                     decoration: InputDecoration(
                       labelText: "Email",
-                      labelStyle: const TextStyle(color: Color(0xFF385A3C)),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.green, width: 2),
-                      ),
                       prefixIcon: const Icon(Icons.email),
                     ),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6C9A8B),
+                      backgroundColor: const Color(0xFF5E7154),
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () {
-                      if (widget.fromDeepLink && widget.email != null) {
-                        setState(() => emailVerified = true);
-                        return;
-                      }
-
                       if (emailTxt.text.trim() == currentUserEmail) {
                         setState(() => emailVerified = true);
                       } else {
@@ -122,21 +111,17 @@ class _ResetPasswordState extends State<ResetPassword> {
                   ),
                 ] else ...[
                   const Text(
-                    "Masukkan Password Baru",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF385A3C)),
+                    "Masukkan password baru kamu",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black87),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: newPasswordTxt,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Password Baru",
-                      labelStyle: const TextStyle(color: Color(0xFF385A3C)),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.green, width: 2),
-                      ),
                       prefixIcon: const Icon(Icons.lock),
                     ),
                   ),
@@ -146,23 +131,16 @@ class _ResetPasswordState extends State<ResetPassword> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Konfirmasi Password",
-                      labelStyle: const TextStyle(color: Color(0xFF385A3C)),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.green, width: 2),
-                      ),
                       prefixIcon: const Icon(Icons.lock_outline),
                     ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6C9A8B),
+                      backgroundColor: const Color(0xFF5E7154),
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () async {
                       final newPassword = newPasswordTxt.text.trim();
@@ -185,7 +163,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       final success = await authVM.changePassword(newPassword);
                       if (!mounted) return;
 
-                      if (success && widget.fromDeepLink) {
+                      if (success) {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -195,26 +173,14 @@ class _ResetPasswordState extends State<ResetPassword> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) => Login()));
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => widget.fromDeepLink ? const Login() : const AccountScreen(),
+                                    ),
+                                  );
                                 },
-                                child: const Text("OK"),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else if (success) {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text("Berhasil"),
-                            content: const Text("Password berhasil diperbarui"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) => AccountScreen()));
-                                },
-                                child: const Text("OK"),
+                                child: const Text("OK", style: TextStyle(color: Colors.black)),
                               ),
                             ],
                           ),
@@ -226,10 +192,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                       }
                     },
                     child: const Text("Simpan Password Baru", style: TextStyle(color: Colors.black)),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Kembali", style: TextStyle(color: Colors.black)),
                   ),
                 ],
               ],

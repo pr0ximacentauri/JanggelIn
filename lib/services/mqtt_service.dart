@@ -58,10 +58,10 @@ class MqttService {
 
           if (topic == '${AppConfig.mqttTopicSub}') {
             final double suhu = (data['suhu'] as num?)?.toDouble() ?? 0;
-            final double kelembaban = (data['kelembaban'] as num?)?.toDouble() ?? 0;
+            final double kelembapan = (data['kelembapan'] as num?)?.toDouble() ?? 0;
             onSensorMessage({
               'temperature': suhu,
-              'humidity': kelembaban,
+              'humidity': kelembapan,
             });
           }  
           if (topic == '${AppConfig.mqttTopicSub2}') {
