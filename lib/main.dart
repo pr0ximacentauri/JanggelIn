@@ -118,7 +118,7 @@ class _JanggelinContent extends State<JanggelinApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey, // <--- Penting!
+      navigatorKey: navigatorKey, 
       debugShowCheckedModeBanner: false,
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),

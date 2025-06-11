@@ -46,6 +46,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   app_links: ^6.4.0
   shared_preferences: ^2.5.3
+  # mqtt5_client: ^4.11.0
 
 flutter_launcher_icons:
   android: true

@@ -19,7 +19,7 @@ class MqttService {
     required void Function(Map<String, dynamic>) onControlStatusChanged,
   }) async {
     _client = MqttServerClient('${AppConfig.mqttBroker}', '');
-    _client.port = 1883;
+    _client.port = AppConfig.mqttPort;
     _client.secure = false;
 
     _client.securityContext = SecurityContext.defaultContext;
@@ -31,19 +31,19 @@ class MqttService {
         .withClientIdentifier('flutter_client_${DateTime.now().millisecondsSinceEpoch}')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    _client.connectionMessage = connMess;
+    _client.connectionMessage = connMess.authenticateAs(AppConfig.mqttUsername, AppConfig.mqttPassword);
 
     try {
       await _client.connect();
     } catch (e) {
-      print('❌ Koneksi MQTT gagal: $e');
+      print('Koneksi MQTT gagal: $e');
       disconnect();
       return;
     }
 
     if (_client.connectionStatus?.state == MqttConnectionState.connected) {
       _isConnected = true;
-      print('✅ Terhubung ke MQTT broker');
+      print('Terhubung ke MQTT broker');
 
       _client.subscribe('${AppConfig.mqttTopicSub}', MqttQos.atMostOnce);
       _client.subscribe('${AppConfig.mqttTopicSub2}', MqttQos.atLeastOnce);
@@ -73,11 +73,11 @@ class MqttService {
             });
           }
         } catch (e) {
-          print('⚠️ Gagal parse MQTT payload dari [$topic]: $e → $payload');
+          print('Gagal parse MQTT payload dari [$topic]: $e → $payload');
         }
       });
     } else {
-      print('❌ Status koneksi MQTT: ${_client.connectionStatus}');
+      print('Status koneksi MQTT: ${_client.connectionStatus}');
       disconnect();
     }
   }
@@ -89,7 +89,7 @@ class MqttService {
     required double maxHumidity
   }) async {
     if (!_isConnected) {
-      debugPrint('⚠️ MQTT belum tersambung, batal publish');
+      debugPrint('MQTT belum tersambung, batal publish');
       return;
     }
     final payload = jsonEncode({
@@ -105,17 +105,17 @@ class MqttService {
       builder.payload!,
       retain: true,
     );
-    debugPrint('📤 [MQTT] Batas optimal dikirim: \n$payload');
+    debugPrint('[MQTT] Batas optimal dikirim: \n$payload');
   }
 
   void disconnect() {
     _client.disconnect();
     _isConnected = false;
-    print('🔌 Disconnect dari MQTT broker');
+    print('Disconnect dari MQTT broker');
   }
 
   void onDisconnected() {
     _isConnected = false;
-    print('⚠️ Disconnect callback terpicu');
+    print('Disconnect callback terpicu');
   }
 }
