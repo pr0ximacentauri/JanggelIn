@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
-import 'package:c3_ppl_agro/views/screens/account_screen.dart';
-import 'package:c3_ppl_agro/views/screens/auth/login_screen.dart';
+import 'package:JanggelIn/view_models/auth_view_model.dart';
+import 'package:JanggelIn/views/screens/account_screen.dart';
+import 'package:JanggelIn/views/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

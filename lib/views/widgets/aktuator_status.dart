@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/models/control.dart';
+import 'package:JanggelIn/models/control.dart';
 import 'package:flutter/material.dart';
 
 class AktuatorStatus extends StatelessWidget {

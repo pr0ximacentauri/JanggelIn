@@ -1,6 +1,6 @@
-import 'package:c3_ppl_agro/models/optimal_limit.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
+import 'package:JanggelIn/models/optimal_limit.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
+import 'package:JanggelIn/view_models/sensor_view_model.dart';
 import 'package:flutter/material.dart';
 
 class OptimalLimitDropdown extends StatefulWidget {

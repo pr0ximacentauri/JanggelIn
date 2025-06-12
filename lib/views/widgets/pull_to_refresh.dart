@@ -1,6 +1,6 @@
-import 'package:c3_ppl_agro/view_models/control_view_model.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
+import 'package:JanggelIn/view_models/control_view_model.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
+import 'package:JanggelIn/view_models/sensor_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

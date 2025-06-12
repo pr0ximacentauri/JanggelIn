@@ -1,11 +1,10 @@
 import 'dart:async';
-
-import 'package:c3_ppl_agro/services/mqtt_service.dart';
-import 'package:c3_ppl_agro/services/notification_service.dart';
-import 'package:c3_ppl_agro/services/sensor_service.dart';
+import 'package:JanggelIn/models/sensor_data.dart';
+import 'package:JanggelIn/services/mqtt_service.dart';
+import 'package:JanggelIn/services/notification_service.dart';
+import 'package:JanggelIn/services/sensor_service.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:c3_ppl_agro/models/sensor_data.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
 
 class SensorViewModel with ChangeNotifier {
   final SensorService _sensorService = SensorService();

@@ -1,11 +1,10 @@
 // ignore_for_file: deprecated_member_use
-
-import 'package:c3_ppl_agro/models/control.dart';
-import 'package:c3_ppl_agro/view_models/control_view_model.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
-import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-import 'package:c3_ppl_agro/models/sensor_data.dart';
+import 'package:JanggelIn/models/control.dart';
+import 'package:JanggelIn/models/sensor_data.dart';
+import 'package:JanggelIn/view_models/control_view_model.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
+import 'package:JanggelIn/view_models/sensor_view_model.dart';
+import 'package:JanggelIn/views/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

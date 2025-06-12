@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/models/sensor_data.dart';
+import 'package:JanggelIn/models/sensor_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SensorService {

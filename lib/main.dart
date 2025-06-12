@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'package:c3_ppl_agro/const.dart';
-import 'package:c3_ppl_agro/services/notification_service.dart';
-import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
-import 'package:c3_ppl_agro/view_models/control_view_model.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-import 'package:c3_ppl_agro/views/screens/auth/forgot_password_screen.dart';
-import 'package:c3_ppl_agro/views/screens/auth/login_screen.dart';
-import 'package:c3_ppl_agro/views/screens/auth/reset_password_screen.dart';
-import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
+import 'package:JanggelIn/const.dart';
+import 'package:JanggelIn/services/background_service.dart';
+import 'package:JanggelIn/services/notification_service.dart';
+import 'package:JanggelIn/view_models/auth_view_model.dart';
+import 'package:JanggelIn/view_models/control_view_model.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
+import 'package:JanggelIn/view_models/sensor_view_model.dart';
+import 'package:JanggelIn/views/screens/auth/forgot_password_screen.dart';
+import 'package:JanggelIn/views/screens/auth/login_screen.dart';
+import 'package:JanggelIn/views/screens/auth/reset_password_screen.dart';
+import 'package:JanggelIn/views/widgets/bottom_navbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:app_links/app_links.dart';
@@ -21,7 +22,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  initializeService();
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,
     anonKey: AppConfig.supabaseAnonKey,
@@ -29,17 +30,14 @@ void main() async {
   await NotificationService.init();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ControlViewModel()),
-          ChangeNotifierProvider(create: (_) => SensorViewModel()),
-          ChangeNotifierProvider(create: (_) => OptimalLimitViewModel()),
-          ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ],
-        child: const JanggelinApp(),
-      ),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ControlViewModel()),
+        ChangeNotifierProvider(create: (_) => SensorViewModel()),
+        ChangeNotifierProvider(create: (_) => OptimalLimitViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+      ],
+      child: const JanggelinApp(),
     ),
   );
 }

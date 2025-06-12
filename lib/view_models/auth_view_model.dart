@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/services/auth_service.dart';
+import 'package:JanggelIn/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

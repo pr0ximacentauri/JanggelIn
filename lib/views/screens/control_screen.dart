@@ -1,13 +1,13 @@
-import 'package:c3_ppl_agro/models/optimal_limit.dart';
-import 'package:c3_ppl_agro/view_models/optimal_limit_view_model.dart';
-import 'package:c3_ppl_agro/view_models/sensor_view_model.dart';
-import 'package:c3_ppl_agro/views/widgets/aktuator_status.dart';
-import 'package:c3_ppl_agro/views/widgets/bottom_navbar.dart';
-import 'package:c3_ppl_agro/views/widgets/optimal_limit_dropdown.dart';
-import 'package:c3_ppl_agro/views/widgets/pull_to_refresh.dart';
+import 'package:JanggelIn/models/optimal_limit.dart';
+import 'package:JanggelIn/view_models/control_view_model.dart';
+import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
+import 'package:JanggelIn/view_models/sensor_view_model.dart';
+import 'package:JanggelIn/views/widgets/aktuator_status.dart';
+import 'package:JanggelIn/views/widgets/bottom_navbar.dart';
+import 'package:JanggelIn/views/widgets/optimal_limit_dropdown.dart';
+import 'package:JanggelIn/views/widgets/pull_to_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:c3_ppl_agro/view_models/control_view_model.dart';
 
 class ControlScreen extends StatelessWidget{
   const ControlScreen({super.key});

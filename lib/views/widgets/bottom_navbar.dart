@@ -1,9 +1,9 @@
 
 
-import 'package:c3_ppl_agro/views/screens/account_screen.dart';
-import 'package:c3_ppl_agro/views/screens/control_screen.dart';
-import 'package:c3_ppl_agro/views/screens/history_screen.dart';
-import 'package:c3_ppl_agro/views/screens/home_screen.dart';
+import 'package:JanggelIn/views/screens/account_screen.dart';
+import 'package:JanggelIn/views/screens/control_screen.dart';
+import 'package:JanggelIn/views/screens/history_screen.dart';
+import 'package:JanggelIn/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavbar extends StatefulWidget {

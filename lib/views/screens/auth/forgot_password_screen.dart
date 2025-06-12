@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/view_models/auth_view_model.dart';
+import 'package:JanggelIn/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

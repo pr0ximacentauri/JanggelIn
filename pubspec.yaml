@@ -1,5 +1,5 @@
-name: c3_ppl_agro
-description: "A new Flutter project."
+name: JanggelIn
+description: "Aplikasi Monitoring Suhu & Kelembapan Jamur Janggel"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -46,6 +46,8 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   app_links: ^6.4.0
   shared_preferences: ^2.5.3
+  rename: ^3.1.0
+  flutter_background_service: ^5.1.0
   # mqtt5_client: ^4.11.0
 
 flutter_launcher_icons:

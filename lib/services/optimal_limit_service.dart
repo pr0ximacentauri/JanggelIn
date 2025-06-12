@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/models/optimal_limit.dart';
+import 'package:JanggelIn/models/optimal_limit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 

@@ -1,4 +1,4 @@
-import 'package:c3_ppl_agro/models/device.dart';
+import 'package:JanggelIn/models/device.dart';
 
 class Control {
   final int id;
