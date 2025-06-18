@@ -5,6 +5,7 @@ import 'package:JanggelIn/view_models/control_view_model.dart';
 import 'package:JanggelIn/view_models/optimal_limit_view_model.dart';
 import 'package:JanggelIn/view_models/sensor_view_model.dart';
 import 'package:JanggelIn/views/widgets/bottom_navbar.dart';
+import 'package:JanggelIn/views/widgets/pull_to_refresh.dart'; // pastikan ini diimport
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -40,6 +41,7 @@ class _HistoryContentState extends State<HistoryContent> {
     optimalLimitVM.getOptimalLimit();
     controlVM.getAllControls();
   }
+
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -66,17 +68,18 @@ class _HistoryContentState extends State<HistoryContent> {
     final controlVM = Provider.of<ControlViewModel>(context);
     final history = sensorVM.sensorHistory;
 
-    if(history.isEmpty){
+    if (history.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
+
     String? selected = selectedDate != null
         ? DateFormat('dd-MM-yyyy').format(selectedDate!)
         : null;
 
     final filteredLogs = selected != null
-        ? history.where((log) =>
-            DateFormat('dd-MM-yyyy').format(log.updatedAt) == selected).toList()
+        ? history.where((log) => DateFormat('dd-MM-yyyy').format(log.updatedAt) == selected).toList()
         : history;
+
     final pumpStatus = controlVM.controls.firstWhere(
       (c) => c.device?.name == 'Pompa Air',
       orElse: () => Control(id: 0, status: '-'),
@@ -84,9 +87,8 @@ class _HistoryContentState extends State<HistoryContent> {
 
     final fanStatus = controlVM.controls.firstWhere(
       (c) => c.device?.name == 'Kipas Exhaust',
-      orElse: () => Control(id: 0,status: '-'),
+      orElse: () => Control(id: 0, status: '-'),
     ).status;
-
 
     return Scaffold(
       backgroundColor: const Color(0xFFC8DCC3),
@@ -99,7 +101,7 @@ class _HistoryContentState extends State<HistoryContent> {
             onPressed: _pickDate,
             tooltip: 'Filter by Date',
           ),
-          if (selectedDate != null) 
+          if (selectedDate != null)
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: _resetFilter,
@@ -107,29 +109,35 @@ class _HistoryContentState extends State<HistoryContent> {
             ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            
-            _buildSectionTitle(
-              selectedDate != null
-                  ? 'Filtered History (${DateFormat('dd-MM-yyyy').format(selectedDate!)})'
-                  : 'History All',
-            ),
-            _buildDataTable(filteredLogs, pumpStatus, fanStatus),
-          ],
+      body: PullToRefresh(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(
+                selectedDate != null
+                    ? 'Filtered History (${DateFormat('dd-MM-yyyy').format(selectedDate!)})'
+                    : 'History All',
+              ),
+              _buildDataTable(filteredLogs, pumpStatus, fanStatus),
+            ],
+          ),
         ),
       ),
     );
   }
+
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF5E7154)),
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF5E7154),
+        ),
       ),
     );
   }
@@ -137,8 +145,8 @@ class _HistoryContentState extends State<HistoryContent> {
   Widget _buildDataTable(
     List<SensorData> logs,
     String pumpStatus,
-    String fanStatus
-    ) {
+    String fanStatus,
+  ) {
     return Center(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -148,7 +156,10 @@ class _HistoryContentState extends State<HistoryContent> {
           scrollDirection: Axis.horizontal,
           child: DataTable(
             headingRowColor: MaterialStateProperty.all(const Color(0xFF5E7154)),
-            headingTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            headingTextStyle: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             columnSpacing: 16,
             columns: const [
               DataColumn(label: Text('Waktu')),
@@ -173,7 +184,7 @@ class _HistoryContentState extends State<HistoryContent> {
                   DataCell(Text(limit != null ? '${limit.minHumidity} %' : '-')),
                   DataCell(Text(limit != null ? '${limit.maxHumidity} %' : '-')),
                   DataCell(Text(pumpStatus)),
-                  DataCell(Text(fanStatus))
+                  DataCell(Text(fanStatus)),
                 ],
               );
             }).toList(),

@@ -15,8 +15,8 @@ class MqttService {
   bool get isConnected => _isConnected;
 
   Future<void> connect({
-    required void Function(Map<String, dynamic>) onSensorMessage,
-    required void Function(Map<String, dynamic>) onControlStatusChanged,
+  required void Function(Map<String, dynamic>) onSensorMessage,
+  required void Function(List<Map<String, dynamic>>) onControlStatusChanged,
   }) async {
     _client = MqttServerClient('${AppConfig.mqttBroker}', '');
     _client.port = AppConfig.mqttPort;
@@ -31,7 +31,10 @@ class MqttService {
         .withClientIdentifier('flutter_client_${DateTime.now().millisecondsSinceEpoch}')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    _client.connectionMessage = connMess.authenticateAs(AppConfig.mqttUsername, AppConfig.mqttPassword);
+    _client.connectionMessage = connMess.authenticateAs(
+      AppConfig.mqttUsername,
+      AppConfig.mqttPassword,
+    );
 
     try {
       await _client.connect();
@@ -54,24 +57,38 @@ class MqttService {
         final payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
         try {
-          final data = jsonDecode(payload) as Map<String, dynamic>;
+          final decoded = jsonDecode(payload);
 
           if (topic == '${AppConfig.mqttTopicSub}') {
-            final double suhu = (data['suhu'] as num?)?.toDouble() ?? 0;
-            final double kelembapan = (data['kelembapan'] as num?)?.toDouble() ?? 0;
+            final suhu = (decoded['suhu'] as num?)?.toDouble() ?? 0;
+            final kelembapan = (decoded['kelembapan'] as num?)?.toDouble() ?? 0;
             onSensorMessage({
               'temperature': suhu,
               'humidity': kelembapan,
             });
-          }  
-          if (topic == '${AppConfig.mqttTopicSub2}') {
-            final int id = data['id_kontrol'] as int;
-            final String status = data['status'] as String;
-            onControlStatusChanged({
-              'id_kontrol': id,
-              'status': status,
-            });
           }
+
+          if (topic == '${AppConfig.mqttTopicSub2}') {
+            List<Map<String, dynamic>> updates = [];
+
+            if (decoded is List) {
+              for (var item in decoded) {
+                final data = item as Map<String, dynamic>;
+                updates.add({
+                  'status': data['status'],
+                  'deviceId': data['fk_perangkat'],
+                });
+              }
+            } else if (decoded is Map) {
+              updates.add({
+                'status': decoded['status'],
+                'deviceId': decoded['fk_perangkat'],
+              });
+            }
+
+            onControlStatusChanged(updates);
+          }
+
         } catch (e) {
           print('Gagal parse MQTT payload dari [$topic]: $e → $payload');
         }
@@ -81,6 +98,7 @@ class MqttService {
       disconnect();
     }
   }
+
 
   Future<void> publishOptimalLimit({
     required double minTemperature,

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:JanggelIn/const.dart';
-import 'package:JanggelIn/services/background_service.dart';
+// import 'package:JanggelIn/services/background_service.dart';
 import 'package:JanggelIn/services/notification_service.dart';
 import 'package:JanggelIn/view_models/auth_view_model.dart';
 import 'package:JanggelIn/view_models/control_view_model.dart';
@@ -22,22 +22,28 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initializeService();
+  
+  await NotificationService.init();
+
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,
     anonKey: AppConfig.supabaseAnonKey,
   );
-  await NotificationService.init();
+
+  // await initializeService();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ControlViewModel()),
-        ChangeNotifierProvider(create: (_) => SensorViewModel()),
-        ChangeNotifierProvider(create: (_) => OptimalLimitViewModel()),
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
-      ],
-      child: const JanggelinApp(),
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ControlViewModel()),
+          ChangeNotifierProvider(create: (_) => SensorViewModel()),
+          ChangeNotifierProvider(create: (_) => OptimalLimitViewModel()),
+          ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ],
+        child: const JanggelinApp(),
+      ),
     ),
   );
 }
@@ -118,6 +124,7 @@ class _JanggelinContent extends State<JanggelinApp> {
     return MaterialApp(
       navigatorKey: navigatorKey, 
       debugShowCheckedModeBanner: false,
+      // ignore: deprecated_member_use
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,

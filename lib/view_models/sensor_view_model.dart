@@ -91,7 +91,7 @@ class SensorViewModel with ChangeNotifier {
 
   Future<void> _saveToDatabase() async {
     if (_lastSavedTemp == null || _lastSavedHumidity == null ||
-        (temperature - _lastSavedTemp!).abs() > 0.5 ||
+        (temperature - _lastSavedTemp!).abs() > 1.0 ||
         (humidity - _lastSavedHumidity!).abs() > 1.0) {
       await _sensorService.uploadSensorData(_sensorData!);
       _lastSavedTemp = temperature;

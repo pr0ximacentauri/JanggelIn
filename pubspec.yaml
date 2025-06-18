@@ -48,6 +48,7 @@ dependencies:
   shared_preferences: ^2.5.3
   rename: ^3.1.0
   flutter_background_service: ^5.1.0
+  flutter_background_service_android: ^6.3.0
   # mqtt5_client: ^4.11.0
 
 flutter_launcher_icons:

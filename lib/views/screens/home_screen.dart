@@ -1,5 +1,6 @@
 import 'package:JanggelIn/view_models/sensor_view_model.dart';
 import 'package:JanggelIn/views/widgets/bottom_navbar.dart';
+import 'package:JanggelIn/views/widgets/pull_to_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/sensor_card.dart';
@@ -19,11 +20,11 @@ class HomeContent extends StatelessWidget {
     final sensorVM = Provider.of<SensorViewModel>(context);
     
     return Scaffold(
-      backgroundColor: Color(0xFFC8DCC3),
+      backgroundColor: const Color(0xFFC8DCC3),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(200),
         child: AppBar(
-          backgroundColor: Color(0xFF5E7154),
+          backgroundColor: const Color(0xFF5E7154),
           flexibleSpace: Padding(
             padding: const EdgeInsets.only(left: 20, right: 0, bottom: 0),
             child: Stack(
@@ -76,30 +77,35 @@ class HomeContent extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-            SensorCard(
-              title: 'Suhu saat ini',
-              value: 'temperature',
-            ),
-            SizedBox(height: 20),
-            SensorCard(
-              title: 'Kelembapan saat ini',
-              value: 'humidity',
-            ),
-            const SizedBox(height: 20),
-            Text(
-              sensorVM.updatedAtFormatted,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontStyle: FontStyle.italic,
+      body: PullToRefresh(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              const SensorCard(
+                title: 'Suhu saat ini',
+                value: 'temperature',
               ),
-            ),
-        ],
+              const SizedBox(height: 20),
+              const SensorCard(
+                title: 'Kelembapan saat ini',
+                value: 'humidity',
+              ),
+              const SizedBox(height: 20),
+              Text(
+                sensorVM.updatedAtFormatted,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
       ),
-      
     );
   }
 }

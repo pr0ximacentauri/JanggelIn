@@ -47,15 +47,15 @@ class _ControlContentState extends State<ControlContent> {
       MaxKelembapanTxt.text = limit.maxHumidity.toString();
     }
 
-    @override
-    void initState() {
-      super.initState();
+    // @override
+    // void initState() {
+    //   super.initState();
       
-      Future.microtask(() {
-        final controlVM = Provider.of<ControlViewModel>(context, listen: false);
-        controlVM.init();
-      });
-    }
+    //   Future.microtask(() {
+    //     final controlVM = Provider.of<ControlViewModel>(context, listen: false);
+    //     controlVM.init();
+    //   });
+    // }
   }
 
   @override

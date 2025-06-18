@@ -33,7 +33,6 @@ class SensorCard extends StatelessWidget {
           ? optimalVM.isTemperatureOptimal(sensorVM.temperature, optimalLimit)
           : optimalVM.isHumidityOptimal(sensorVM.humidity, optimalLimit);
     }
-
     final bool showNone = !sensorVM.isSensorOnline || optimalLimit == null; 
 
     return Column(

@@ -1,4 +1,4 @@
-package com.example.c3_ppl_agro
+package com.janggelin.app
 
 import io.flutter.embedding.android.FlutterActivity
 
